@@ -1,6 +1,8 @@
 # UI
 shiny::observeEvent(refresh_display(), {
-  if (!is_image(the_background) | !is_image(the_mask) | is.null(input$threshold_x)) {
+  if (
+    !is_image(the_background) | !is_image(the_mask) | is.null(input$threshold_x)
+  ) {
     .toggleTabs(5:7, "OFF")
     toggled_tabs$toggled[5:7] <<- FALSE
   } else if (toggled_tabs$toggled[5] == FALSE) {

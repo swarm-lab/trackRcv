@@ -1,4 +1,4 @@
-.shades <- col2rgb(pals::alphabet())[3:1, ]
+.shades <- grDevices::col2rgb(pals::alphabet())[3:1, ]
 mode(.shades) <- "integer"
 
 .drawText <- function(
@@ -181,66 +181,8 @@ mode(.shades) <- "integer"
   NULL
 }
 
-.drawTexts <- function(img, SD, BY, scale = 1L, thickness = 1L) {
-  if (nrow(SD) > 0) {
-    .drawText(
-      img,
-      BY$track,
-      SD$x,
-      SD$y,
-      scale,
-      .shades[, (BY$track %% ncol(.shades)) + 1],
-      thickness = thickness
-    )
-  }
-  NULL
-}
-
-.drawBoxes <- function(img, SD, BY, linewidth = 1L) {
-  if (nrow(SD) > 0) {
-    l <- list(
-      c(SD$x, SD$y),
-      c(SD$width, SD$height),
-      SD$angle
-    )
-    box <- cv2$boxPoints(reticulate::r_to_py(l))
-    box <- np$int_(box)
-    cv2$drawContours(
-      img,
-      list(reticulate::r_to_py(box)),
-      0L,
-      c(255L, 255L, 255L),
-      as.integer(max(1, round(2 * linewidth)))
-    )
-    cv2$drawContours(
-      img,
-      list(reticulate::r_to_py(box)),
-      0L,
-      .shades[, (unlist(BY) %% ncol(.shades)) + 1],
-      as.integer(max(1, round(linewidth)))
-    )
-  }
-  NULL
-}
-
-.drawTracks <- function(img, SD, BY, linewidth = 1L) {
-  if (nrow(SD) > 0) {
-    trace <- matrix(c(SD$x, SD$y), ncol = 2)
-    mode(trace) <- "integer"
-    cv2$polylines(
-      img,
-      list(reticulate::r_to_py(trace)),
-      0L,
-      c(255L, 255L, 255L),
-      as.integer(max(1, round(2 * linewidth)))
-    )
-    cv2$polylines(
-      img,
-      list(reticulate::r_to_py(trace)),
-      0L,
-      .shades[, (BY$track %% ncol(.shades)) + 1],
-      as.integer(max(1, round(linewidth)))
-    )
-  }
-  NULL
+.point_in_rectangle <- function(x, y, rect) {
+  l <- list(c(rect[1], rect[2]), c(rect[3], rect[4]), rect[5])
+  box <- reticulate::py_to_r(cv2$boxPoints(reticulate::r_to_py(l)))
+  pracma::inpolygon(x, y, box[, 1], box[, 2], TRUE)
 }

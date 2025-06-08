@@ -16,19 +16,19 @@ shiny::observeEvent(refresh_display(), {
       input$blob_height_x == 0 &
       input$blob_area_x == 0
   ) {
-    updateNumericInput(
+    shiny::updateNumericInput(
       session,
       "blob_width_x",
       value = round(n_row(the_image) / 2),
       max = n_row(the_image)
     )
-    updateNumericInput(
+    shiny::updateNumericInput(
       session,
       "blob_height_x",
       value = round(n_col(the_image) / 2),
       max = n_col(the_image)
     )
-    updateNumericInput(
+    shiny::updateNumericInput(
       session,
       "blob_area_x",
       value = 1,
@@ -111,7 +111,7 @@ shiny::observeEvent(refresh_display(), {
     d <- Rfast::dista(dt[, 2:3], centers[, 2:3])
     dt[, k := Rfast::rowMins(d)]
     gr <- unique(dt[, .(label, k)])
-    setorder(gr, label)
+    data.table::setorder(gr, label)
     gr[, new_id := label]
 
     for (j in 1:nrow(gr)) {
@@ -206,7 +206,6 @@ shiny::observeEvent(input$auto_params, {
       duration = NULL
     )
 
-    # frame_pos <- id_frames()
     tot_summ <- NULL
 
     pb <- shiny::Progress$new()
@@ -265,7 +264,7 @@ shiny::observeEvent(input$auto_params, {
       )
 
       dt_summ <- dt[,
-        data.table::as.data.table(kbox(cbind(x, y))),
+        data.table::as.data.table(kbox(cbind(x, y) + runif(length(x) * 2, -1, 1))),
         by = .(label)
       ]
 
@@ -304,22 +303,22 @@ shiny::observeEvent(input$auto_params, {
 
     pb$close()
 
-    updateNumericInput(
+    shiny::updateNumericInput(
       session,
       "blob_width_x",
       value = round(1.05 * max(tot_summ[outlier == FALSE, width]))
     )
-    updateNumericInput(
+    shiny::updateNumericInput(
       session,
       "blob_height_x",
       value = round(1.05 * max(tot_summ[outlier == FALSE, height]))
     )
-    updateNumericInput(
+    shiny::updateNumericInput(
       session,
       "blob_area_x",
       value = round(0.95 * min(tot_summ[outlier == FALSE, n]))
     )
-    updateNumericInput(
+    shiny::updateNumericInput(
       session,
       "blob_density_x",
       value = round(0.95 * min(tot_summ[outlier == FALSE, density]), 3)

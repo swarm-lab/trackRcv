@@ -13,3 +13,23 @@ URL: https://swarm-lab.github.io/trackRcv/
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Imports: 
+    autothresholdr (>= 1.4.2),
+    CEC (>= 0.11.2),
+    clue (>= 0.3.66),
+    cluster (>= 2.1.8.1),
+    data.table (>= 1.17.4),
+    grDevices (>= 4.5.0),
+    mvoutlier (>= 2.1.1),
+    pals (>= 1.10),
+    pracma (>= 2.4.4),
+    reticulate (>= 1.42.0),
+    Rfast (>= 2.1.5.1),
+    Rfast2 (>= 0.1.5.4),
+    shiny (>= 1.10.0),
+    shinyFiles (>= 0.9.3),
+    shinyjs (>= 2.1.0),
+    shinyWidgets (>= 0.9.0),
+    stats (>= 4.5.0),
+    stringr (>= 1.5.1),
+    utils (>= 4.5.0)

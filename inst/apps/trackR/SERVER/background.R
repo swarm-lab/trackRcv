@@ -14,7 +14,7 @@ output$background_status <- shiny::renderUI({
     (refresh_display() > -1 | input$compute_background > -1) &
       !is_image(the_background)
   ) {
-    p("Background missing (and required).", class = "bad")
+    shiny::p("Background missing (and required).", class = "bad")
   } else {
     NULL
   }
@@ -62,6 +62,7 @@ shiny::observeEvent(refresh_display(), {
               ghost_coords[i, 2],
               r,
               c(0L, 0L, 255L),
+              c(255L, 255L, 255L),
               sc
             )
           }
@@ -147,7 +148,7 @@ shiny::observeEvent(refresh_background(), {
 # Compute background estimate
 shiny::observeEvent(input$compute_background, {
   if (is_video_capture(the_video)) {
-    showElement("curtain")
+    shinyjs::showElement("curtain")
     the_background <<- np$uint8(
       backgrounder(
         the_video,
@@ -158,7 +159,7 @@ shiny::observeEvent(input$compute_background, {
       )
     )
 
-    hideElement("curtain")
+    shinyjs::hideElement("curtain")
     refresh_display(refresh_display() + 1)
   }
 })
@@ -182,12 +183,6 @@ shiny::observeEvent(input$ghost_button, {
     collect_ghost(1)
   }
 })
-
-.point_in_rectangle <- function(x, y, rect) {
-  l <- list(c(rect[1], rect[2]), c(rect[3], rect[4]), rect[5])
-  box <- reticulate::py_to_r(cv2$boxPoints(reticulate::r_to_py(l)))
-  pracma::inpolygon(x, y, box[, 1], box[, 2], TRUE)
-}
 
 shinyjs::onevent("click", "display_img", function(props) {
   if (collect_ghost() > 0) {

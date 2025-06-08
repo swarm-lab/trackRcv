@@ -24,7 +24,7 @@ shinyjs::disabled(
 
     shiny::p(),
 
-    htmlOutput("scaleStatus", container = p),
+    shiny::htmlOutput("scale_status", container = p),
 
     shiny::hr()
   )

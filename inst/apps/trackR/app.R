@@ -6,7 +6,7 @@ if (Sys.info()["sysname"] == "Darwin") {
 }
 
 library(reticulate)
-reticulate::use_virtualenv("trackRcv", required = TRUE)
+reticulate::use_virtualenv("trackR", required = TRUE)
 cv2 <- reticulate::import("cv2", convert = FALSE)
 np <- reticulate::import("numpy", convert = FALSE)
 base64 <- reticulate::import("base64", convert = FALSE)
@@ -19,6 +19,7 @@ library(shinyjs)
 library(shinyalert)
 library(autothresholdr)
 library(stringr)
+library(pracma)
 library(data.table)
 library(CEC)
 library(mvoutlier)

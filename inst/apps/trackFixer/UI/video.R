@@ -6,9 +6,9 @@ shinyWidgets::verticalTabPanel(
   shiny::htmlOutput("video_status"),
   shiny::htmlOutput("tracks_status"),
 
-  tags$table(
-    tags$tr(
-      tags$td(
+  shiny::tags$table(
+    shiny::tags$tr(
+      shiny::tags$td(
         shinyFiles::shinyFilesButton(
           "video_file",
           "Select video",
@@ -18,9 +18,9 @@ shinyWidgets::verticalTabPanel(
         ),
         style = "width: 49%;"
       ),
-      tags$td(),
-      tags$td(
-        shinyFilesButton(
+      shiny::tags$td(),
+      shiny::tags$td(
+        shinyFiles::shinyFilesButton(
           "tracks_file",
           "Select tracks",
           "Please select a track file",
@@ -38,17 +38,17 @@ shinyWidgets::verticalTabPanel(
 
   shiny::p(shiny::strong("Keyboard navigation")),
 
-  tags$table(
+  shiny::tags$table(
     style = "width: 100%; text-align: center;",
-    tags$tr(
-      tags$td(),
-      tags$td("+ 1 sec.", style = "vertical-align: bottom;"),
-      tags$td()
+    shiny::tags$tr(
+      shiny::tags$td(),
+      shiny::tags$td("+ 1 sec.", style = "vertical-align: bottom;"),
+      shiny::tags$td()
     ),
-    tags$tr(
-      tags$td("- 1 frame", style = "vertical-align: bottom;"),
-      tags$td(
-        actionButton(
+    shiny::tags$tr(
+      shiny::tags$td("- 1 frame", style = "vertical-align: bottom;"),
+      shiny::tags$td(
+        shiny::actionButton(
           "plus_sec",
           shiny::icon(
             "caret-up",
@@ -59,11 +59,11 @@ shinyWidgets::verticalTabPanel(
           style = "padding: 0px;"
         )
       ),
-      tags$td("+ 1 frame", style = "vertical-align: bottom;")
+      shiny::tags$td("+ 1 frame", style = "vertical-align: bottom;")
     ),
-    tags$tr(
-      tags$td(
-        actionButton(
+    shiny::tags$tr(
+      shiny::tags$td(
+        shiny::actionButton(
           "minus_frame",
           shiny::icon(
             "caret-left",
@@ -74,8 +74,8 @@ shinyWidgets::verticalTabPanel(
           style = "padding: 0px;"
         )
       ),
-      tags$td(
-        actionButton(
+      shiny::tags$td(
+        shiny::actionButton(
           "minus_sec",
           shiny::div(
             shiny::div(shiny::icon(
@@ -88,8 +88,8 @@ shinyWidgets::verticalTabPanel(
           style = "padding: 0px;"
         )
       ),
-      tags$td(
-        actionButton(
+      shiny::tags$td(
+        shiny::actionButton(
           "plus_frame",
           shiny::icon(
             "caret-right",
@@ -101,10 +101,10 @@ shinyWidgets::verticalTabPanel(
         )
       )
     ),
-    tags$tr(
-      tags$td(),
-      tags$td("- 1 sec.", style = "vertical-align: top;"),
-      tags$td()
+    shiny::tags$tr(
+      shiny::tags$td(),
+      shiny::tags$td("- 1 sec.", style = "vertical-align: top;"),
+      shiny::tags$td()
     )
   ),
 
@@ -124,8 +124,8 @@ shinyWidgets::verticalTabPanel(
         ),
         style = "width: 49%;"
       ),
-      tags$td(),
-      tags$td(
+      shiny::tags$td(),
+      shiny::tags$td(
         shiny::numericInput(
           "tag_width_x",
           "Tag line width:",
@@ -143,43 +143,43 @@ shinyWidgets::verticalTabPanel(
 
   shiny::hr(),
 
-  tags$table(
-    tags$tr(
-      tags$td(
-        actionButton("reassign_track", "Reassign [q]", width = "100%"),
+  shiny::tags$table(
+    shiny::tags$tr(
+      shiny::tags$td(
+        shiny::actionButton("reassign_track", "Reassign [q]", width = "100%"),
         style = "width: 49%;"
       ),
-      tags$td(),
-      tags$td(
-        actionButton("remove_track", "Remove [w]", width = "100%"),
+      shiny::tags$td(),
+      shiny::tags$td(
+        shiny::actionButton("remove_track", "Remove [w]", width = "100%"),
         style = "width: 49%;"
       )
     ),
 
-    tags$tr(),
+    shiny::tags$tr(),
 
-    tags$tr(
-      tags$td(
-        actionButton("swap_track", "Swap IDs [e]", width = "100%"),
+    shiny::tags$tr(
+      shiny::tags$td(
+        shiny::actionButton("swap_track", "Swap IDs [e]", width = "100%"),
         style = "width: 49%;"
       ),
-      tags$td(),
-      tags$td(
-        actionButton("merge_track", "Merge IDs [r]", width = "100%"),
+      shiny::tags$td(),
+      shiny::tags$td(
+        shiny::actionButton("merge_track", "Merge IDs [r]", width = "100%"),
         style = "width: 49%;"
       )
     ),
 
-    tags$tr(),
+    shiny::tags$tr(),
 
-    tags$tr(
-      tags$td(
-        actionButton("revert_changes", "Undo [a]", width = "100%"),
+    shiny::tags$tr(
+      shiny::tags$td(
+        shiny::actionButton("revert_changes", "Undo [a]", width = "100%"),
         style = "width: 49%;"
       ),
-      tags$td(),
-      tags$td(
-        actionButton("save_changes", "Save [s]", width = "100%"),
+      shiny::tags$td(),
+      shiny::tags$td(
+        shiny::actionButton("save_changes", "Save [s]", width = "100%"),
         style = "width: 49%;"
       )
     ),
@@ -187,9 +187,9 @@ shinyWidgets::verticalTabPanel(
     class = "stateTable"
   ),
 
-  hr(),
+  shiny::hr(),
 
-  tableOutput("track_stats"),
+  shiny::tableOutput("track_stats"),
 
   shiny::hr()
 )

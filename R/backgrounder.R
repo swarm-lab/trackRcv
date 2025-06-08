@@ -10,9 +10,9 @@
 #'
 #' @param method The name of a method to reconstruct the background. There are
 #'  currently 4 methods available: "mean" (uses the average value of each pixel
-#'  as background), "median" (uses the median value of each pixel as background), 
-#'  "min" (uses the minimum value of each pixel as background), "max" (uses the 
-#'  maximum value of each pixel as background), and "quant" (uses an arbitrary 
+#'  as background), "median" (uses the median value of each pixel as background),
+#'  "min" (uses the minimum value of each pixel as background), "max" (uses the
+#'  maximum value of each pixel as background), and "quant" (uses an arbitrary
 #'  quantile value of each pixel as background).
 #'
 #' @param prob If \code{method = "quant"}, the quantile value to use.
@@ -26,8 +26,14 @@
 #' @author Simon Garnier, \email{garnier@@njit.edu}
 #'
 #' @export
-backgrounder <- function(video, n = 10, method = "median", prob = 0.025,
-                         start = NULL, end = NULL) {
+backgrounder <- function(
+  video,
+  n = 10,
+  method = "median",
+  prob = 0.025,
+  start = NULL,
+  end = NULL
+) {
   if (!inherits(video, c("cv2.VideoCapture", "python.builtin.object"))) {
     stop("This is not a Python/OpenCV VideoCapture object.")
   }
@@ -46,7 +52,11 @@ backgrounder <- function(video, n = 10, method = "median", prob = 0.025,
   }
 
   if (shiny::isRunning()) {
-    shiny::showNotification("Loading images in memory.", id = "load", duration = NULL)
+    shiny::showNotification(
+      "Loading images in memory.",
+      id = "load",
+      duration = NULL
+    )
   } else {
     message("Loading images in memory.")
   }
@@ -54,13 +64,17 @@ backgrounder <- function(video, n = 10, method = "median", prob = 0.025,
   frames <- as.integer(seq.int(start, end, length.out = n))
 
   l <- lapply(frames, function(i) {
-    video$set(cv2$CAP_PROP_POS_FRAMES, i-1)
+    video$set(cv2$CAP_PROP_POS_FRAMES, i - 1)
     reticulate::py_to_r(video$read()[1]) * 1.0
   })
 
   if (shiny::isRunning()) {
     shiny::removeNotification(id = "load")
-    shiny::showNotification("Calculating background.", id = "calc", duration = NULL)
+    shiny::showNotification(
+      "Calculating background.",
+      id = "calc",
+      duration = NULL
+    )
   } else {
     message("Calculating background.")
   }
@@ -69,25 +83,38 @@ backgrounder <- function(video, n = 10, method = "median", prob = 0.025,
 
   for (i in 1:3) {
     if (shiny::isRunning()) {
-      shiny::showNotification(paste0("Processing ", c("red", "green", "blue")[i], " channel."),
-        id = "layer", duration = NULL
+      shiny::showNotification(
+        paste0("Processing ", c("red", "green", "blue")[i], " channel."),
+        id = "layer",
+        duration = NULL
       )
     } else {
       message(paste0("Processing ", c("red", "green", "blue")[i], " channel."))
     }
 
     if (method == "mean") {
-      med[, , i] <- Rfast::rowmeans(sapply(l, function(x) x[][, , i]))
+      med[,, i] <- Rfast::rowmeans(sapply(l, function(x) x[][,, i]))
     } else if (method == "median") {
-      med[, , i] <- Rfast::rowMedians(sapply(l, function(x) x[][, , i]))
+      med[,, i] <- Rfast::rowMedians(sapply(l, function(x) x[][,, i]))
     } else if (method == "min") {
-      med[, , i] <- Rfast::rowMins(sapply(l, function(x) x[][, , i]), value = TRUE)
+      med[,, i] <- Rfast::rowMins(
+        sapply(l, function(x) x[][,, i]),
+        value = TRUE
+      )
     } else if (method == "max") {
-      med[, , i] <- Rfast::rowMaxs(sapply(l, function(x) x[][, , i]), value = TRUE)
+      med[,, i] <- Rfast::rowMaxs(
+        sapply(l, function(x) x[][,, i]),
+        value = TRUE
+      )
     } else if (method == "quant") {
-      med[, , i] <- Rfast2::rowQuantile(sapply(l, function(x) x[][, , i]), probs = prob)
+      med[,, i] <- Rfast2::rowQuantile(
+        sapply(l, function(x) x[][,, i]),
+        probs = prob
+      )
     } else {
-      stop("'method' should be one of 'mean', 'median', 'min', 'max', or 'quant'")
+      stop(
+        "'method' should be one of 'mean', 'median', 'min', 'max', or 'quant'"
+      )
     }
 
     if (shiny::isRunning()) {

@@ -2,7 +2,7 @@
 % Please edit documentation in R/cv.R
 \name{n_frames}
 \alias{n_frames}
-\title{The Number of Frames in a Python VideoCapture Object}
+\title{Number of Frames in a Python VideoCapture Object}
 \usage{
 n_frames(x)
 }

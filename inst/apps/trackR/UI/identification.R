@@ -18,7 +18,7 @@ shinyjs::disabled(
           style = "width: 54%; vertical-align: top; padding: 0px;"
         ),
         shiny::tags$td(
-          HTML("&nbsp;using&nbsp;"),
+          shiny::HTML("&nbsp;using&nbsp;"),
           style = "vertical-align: top; padding-top: 7px; text-align: center;"
         ),
         shiny::tags$td(
@@ -38,7 +38,6 @@ shinyjs::disabled(
       )
     ),
 
-    # shiny::hr(class = "hr-text", `data-content` = "Or set parameters manually"),
     shiny::hr(),
     shiny::numericInput(
       "blob_width_x",

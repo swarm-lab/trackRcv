@@ -1,5 +1,5 @@
 # Globals and reactives
-volumes <- c(Home = fs::path_home(), getVolumes()())
+volumes <- c(Home = fs::path_home(), shinyFiles::getVolumes()())
 video_range <- c(0, 0)
 the_video <- NULL
 the_image <- NULL
@@ -14,9 +14,9 @@ refresh_video <- shiny::reactiveVal(0)
 # UI
 output$video_status <- shiny::renderUI({
   if (refresh_display() > -1 & !is_video_capture(the_video)) {
-    p("Video missing (and required).", class = "bad")
+    shiny::p("Video missing (and required).", class = "bad")
   } else if (!is_video_capture(the_video)) {
-    p("Incompatible videos.", class = "bad")
+    shiny::p("Incompatible videos.", class = "bad")
   } else {
     NULL
   }

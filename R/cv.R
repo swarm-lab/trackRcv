@@ -23,8 +23,8 @@
 #'
 #' @export
 install_cv <- function(python_version = "3.12.5") {
-  if (reticulate::virtualenv_exists("trackRcv")) {
-    reticulate::use_virtualenv("trackRcv", required = TRUE)
+  if (reticulate::virtualenv_exists("trackR")) {
+    reticulate::use_virtualenv("trackR", required = TRUE)
   } else if (reticulate::virtualenv_exists("r-reticulate")) {
     reticulate::use_virtualenv("r-reticulate", required = TRUE)
   }
@@ -70,12 +70,12 @@ install_cv <- function(python_version = "3.12.5") {
     }
   }
 
-  if (!reticulate::virtualenv_exists("trackRcv")) {
+  if (!reticulate::virtualenv_exists("trackR")) {
     answer <- utils::askYesNo(
       paste0(
         "\n------------------------------------------------------------",
         "\n",
-        "\nNo trackRcv environment was found on this system.",
+        "\nNo trackR environment was found on this system.",
         "\nIt will be created with all the necessary packages.",
         "\nWould you like to continue?",
         "\n",
@@ -90,11 +90,11 @@ install_cv <- function(python_version = "3.12.5") {
 
     if (answer) {
       reticulate::virtualenv_create(
-        envname = "trackRcv",
+        envname = "trackR",
         version = python_version,
       )
       reticulate::virtualenv_install(
-        envname = "trackRcv",
+        envname = "trackR",
         packages = c("opencv-python")
       )
     } else {
@@ -120,7 +120,7 @@ install_cv <- function(python_version = "3.12.5") {
 
     if (answer) {
       reticulate::virtualenv_install(
-        envname = "trackRcv",
+        envname = "trackR",
         packages = c("opencv-python")
       )
     } else {
@@ -145,14 +145,14 @@ install_cv <- function(python_version = "3.12.5") {
 
     if (answer) {
       reticulate::virtualenv_install(
-        envname = "trackRcv",
+        envname = "trackR",
         packages = c(
           "pip"
         ),
         pip_options = "--upgrade"
       )
       reticulate::virtualenv_install(
-        envname = "trackRcv",
+        envname = "trackR",
         packages = c("opencv-python"),
         pip_options = "--upgrade"
       )
@@ -162,7 +162,7 @@ install_cv <- function(python_version = "3.12.5") {
   data.frame(
     install_path = tryCatch(
       normalizePath(
-        paste0(reticulate::virtualenv_root(), "/trackRcv"),
+        paste0(reticulate::virtualenv_root(), "/trackR"),
         mustWork = TRUE
       ),
       error = function(e) NA
@@ -190,7 +190,13 @@ install_cv <- function(python_version = "3.12.5") {
 #'
 #' @export
 remove_cv <- function() {
-  reticulate::virtualenv_remove(envname = "trackRcv")
+  unlink(
+    normalizePath(
+      paste0(reticulate::virtualenv_root(), "/trackR"),
+      mustWork = TRUE
+    ),
+    recursive = TRUE
+  )
 }
 
 
@@ -207,8 +213,8 @@ remove_cv <- function() {
 #'
 #' @export
 cv_installed <- function() {
-  if (reticulate::virtualenv_exists("trackRcv")) {
-    pkgs <- reticulate::py_list_packages("trackRcv")
+  if (reticulate::virtualenv_exists("trackR")) {
+    pkgs <- reticulate::py_list_packages("trackR")
     any(grepl("opencv", pkgs$package))
   } else {
     FALSE
@@ -230,8 +236,8 @@ cv_installed <- function() {
 #'
 #' @export
 cv_version <- function() {
-  if (reticulate::virtualenv_exists("trackRcv")) {
-    pkgs <- reticulate::py_list_packages("trackRcv")
+  if (reticulate::virtualenv_exists("trackR")) {
+    pkgs <- reticulate::py_list_packages("trackR")
     pkgs$version[grepl("opencv", pkgs$package)]
   } else {
     NA
@@ -257,7 +263,7 @@ is_video_capture <- function(x) {
 }
 
 
-#' @title The Number of Frames in a Python VideoCapture Object
+#' @title Number of Frames in a Python VideoCapture Object
 #'
 #' @description This function returns the number of frames present in a Python
 #'  VideoCapture object.
@@ -278,6 +284,17 @@ n_frames <- function(x) {
 }
 
 
+#' @title Framerate of a Python VideoCapture Object
+#'
+#' @description This function returns the framerate of a Python VideoCapture
+#'  object.
+#'
+#' @param x A Python VideoCapture object.
+#'
+#' @return A numeric value.
+#'
+#' @author Simon Garnier, \email{garnier@@njit.edu}
+#'
 #' @export
 fps <- function(x) {
   if (is_video_capture(x)) {
@@ -331,7 +348,7 @@ is_image <- function(x) {
 }
 
 
-#' @title The Number of Rows in a Numpy Array
+#' @title Number of Rows in a Numpy Array
 #'
 #' @description This function returns the number of rows present in a Numpy
 #'  array.
@@ -354,7 +371,7 @@ n_row <- function(x) {
 }
 
 
-#' @title The Number of Columns in a Numpy Array
+#' @title Number of Columns in a Numpy Array
 #'
 #' @description This function returns the number of columns present in a Numpy
 #'  array.
@@ -377,16 +394,67 @@ n_col <- function(x) {
 }
 
 
+#' @title Color to BGR Conversion
+#'
+#' @description R color to BRG (blue/green/red) conversion.
+#'
+#' @param col Vector of any of the three kinds of R color specifications, i.e.,
+#'  either a color name (as listed by \code{\link{colors}}()), a hexadecimal
+#'  string of the form "\code{#rrggbb}" or "\code{#rrggbbaa}" (see
+#'  \code{\link{rgb}}), or a positive integer \code{i} meaning
+#'  \code{\link{palette}()[i]}.
+#'
+#' @param alpha Logical value indicating whether the alpha channel (opacity)
+#'  values should be returned.
+#'
+#' @details \code{\link{NA}} (as integer or character) and "NA" mean transparent.
+#'
+#' Values of \code{col} not of one of these types are coerced: real vectors are
+#'  coerced to integer and other types to character. (factors are coerced to
+#'  character: in all other cases the class is ignored when doing the coercion.)
+#'
+#' Zero and negative values of \code{col} are an error.
+#'
+#' @return An integer matrix with three or four (for \code{alpha = TRUE}) rows
+#'  and number of columns the length of \code{col}. If col has names these are
+#'  used as the column names of the return value.
+#'
+#' @author Simon Garnier, \email{garnier@@njit.edu}
+#'
+#' @seealso \code{\link{col2rgb}}, \code{\link{rgb}}, \code{\link{palette}}
+#'
+#' @examples
+#' col2bgr("red")
+#' col2bgr(1:10)
+#'
 #' @export
 col2bgr <- function(col, alpha = FALSE) {
   if (alpha) {
-    col2rgb(col, alpha)[c(3:1, 4), , drop = FALSE]
+    grDevices::col2rgb(col, alpha)[c(3:1, 4), , drop = FALSE]
   } else {
-    col2rgb(col, alpha)[3:1, , drop = FALSE]
+    grDevices::col2rgb(col, alpha)[3:1, , drop = FALSE]
   }
 }
 
 
+#' @title Codec Name to FOURCC Code
+#'
+#' @description \code{fourcc} translates the 4-character name of a video codec
+#'  into its corresponding \href{https://www.fourcc.org/codecs.php}{FOURCC}
+#'  code.
+#'
+#' @param x A 4-element character chain corresponding to the name of a valid
+#'  video codec. A list of valid codec names can be found at this archived
+#'  page of the fourcc site
+#'  \href{https://www.fourcc.org/codecs.php}{https://www.fourcc.org/codecs.php}.
+#'
+#' @return An integer value corresponding to the FOURCC code of the video codec.
+#'
+#' @author Simon Garnier, \email{garnier@@njit.edu}
+#'
+#' @examples
+#' fourcc("xvid")
+#'
 #' @export
 fourcc <- function(str) {
   chars <- unlist(strsplit(str, split = ""))

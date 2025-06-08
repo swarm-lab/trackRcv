@@ -85,7 +85,7 @@ shiny::observeEvent(tracks_path(), {
     mask <<- cv2$compare(the_mask, 0, 1L)
     mask <<- cv2$divide(mask, 255)
 
-    pb <<- Progress$new()
+    pb <<- shiny::Progress$new()
     pb$set(message = "Computing: ", value = 0, detail = "0%")
     old_check <<- 0
     old_frame <<- 1
@@ -151,7 +151,7 @@ shiny::observeEvent(loop_debounced(), {
       ]
       dt[kd > (2 * input$blob_height_x), "k"] <- NA
       gr <- unique(dt[, .(label, k)])
-      setorder(gr, label)
+      data.table::setorder(gr, label)
       gr[, new_id := label]
 
       for (j in 1:nrow(gr)) {
@@ -229,7 +229,7 @@ shiny::observeEvent(loop_debounced(), {
         memory <<- rbind(memory, blobs)
 
         to_write <- blobs[, -"id"]
-        setcolorder(
+        data.table::setcolorder(
           to_write,
           c("frame", "track", "x", "y", "width", "height", "angle", "n")
         )
@@ -237,7 +237,7 @@ shiny::observeEvent(loop_debounced(), {
         if (!is.null(scale_px()) & !is.null(scale_real())) {
           if (!is.na(scale_real())) {
             to_write[,
-              paste0(c("x", "y", "width", "height"), "_", input$unit_real) := .(
+              paste0(c("x", "y", "width", "height"), "_", unit_real()) := .(
                 (x - origin()[1]) * scale_real() / scale_px(),
                 (y - origin()[2]) * scale_real() / scale_px(),
                 width * scale_real() / scale_px(),
@@ -309,7 +309,7 @@ shiny::observeEvent(loop_debounced(), {
     } else {
       loop(0)
       pb$close()
-      removeNotification(id = "tracking")
+      shiny::removeNotification(id = "tracking")
       shinyjs::hideElement("curtain")
     }
   }

@@ -1,6 +1,6 @@
 # Globals and reactives
 shinyjs::hideElement("curtain")
-toggled_tabs <- data.frame(
+toggled_tabs <- data.table::data.table(
   tab = 1:7,
   toggled = c(TRUE, rep(FALSE, 6))
 )

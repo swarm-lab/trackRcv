@@ -3,6 +3,7 @@ scale_coords <- NULL
 
 scale_px <- shiny::reactiveVal()
 scale_real <- shiny::reactiveVal()
+unit_real <- shiny::reactiveVal()
 collect_scale <- shiny::reactiveVal(0)
 stop_scale_collection <- shiny::reactiveVal(0)
 scale_modal <- shiny::reactiveVal(0)
@@ -71,7 +72,7 @@ shiny::observeEvent(refresh_display(), {
   }
 })
 
-output$scaleStatus <- shiny::renderUI({
+output$scale_status <- shiny::renderUI({
   if (!is.null(origin)) {
     origin_st <- paste0(
       "Origin: [",
@@ -90,7 +91,7 @@ output$scaleStatus <- shiny::renderUI({
     if (!is.na(scale_real())) {
       scale_st <- paste0(
         "1 ",
-        input$unit_real,
+        unit_real(),
         " = ",
         round(scale_px() / scale_real(), 2),
         " pixels."
@@ -168,21 +169,23 @@ shiny::observeEvent(scale_modal(), {
         title = "Set scale",
         easyClose = TRUE,
 
-        tags$table(
+        shiny::tags$table(
           style = "width: 100%;",
-          tags$tr(
-            shiny::tags$td(shiny::numericInput(
-              "scale_real",
-              "Distance between the 2 reference points",
-              NA,
-              0,
-              Inf,
-              width = "100%"
-            )),
+          shiny::tags$tr(
+            shiny::tags$td(
+              shiny::numericInput(
+                "scale_real_x",
+                "Distance between the 2 reference points",
+                NA,
+                0,
+                Inf,
+                width = "100%"
+              )
+            ),
             shiny::tags$td(style = "width: 10px;"),
             shiny::tags$td(
               shiny::selectInput(
-                "unit_real",
+                "unit_real_x",
                 "Unit",
                 units,
                 selected = "cm",
@@ -206,6 +209,10 @@ shiny::observeEvent(input$scale_set, {
   shiny::removeModal(session)
 })
 
-shiny::observeEvent(input$scale_real, {
-  scale_real(input$scale_real)
+shiny::observeEvent(input$scale_real_x, {
+  scale_real(input$scale_real_x)
+})
+
+shiny::observeEvent(input$unit_real_x, {
+  unit_real(input$unit_real_x)
 })

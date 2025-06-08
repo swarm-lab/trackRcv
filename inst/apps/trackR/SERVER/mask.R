@@ -88,8 +88,8 @@ shiny::observeEvent(refresh_display(), {
         for (j in seq_len(n)) {
           indices <- np$where(cc == j)
           lab <- as.character(vals[i])
-          x <- reticulate::py_to_r(indices[1]$mean()) 
-          y <- reticulate::py_to_r(indices[0]$mean()) 
+          x <- reticulate::py_to_r(indices[1]$mean())
+          y <- reticulate::py_to_r(indices[0]$mean())
 
           .drawTag(
             to_display,
@@ -306,7 +306,7 @@ shiny::observeEvent(stop_mask_collection(), {
       }
     }
 
-    removeNotification(id = "mask_notif")
+    shiny::removeNotification(id = "mask_notif")
     .toggleInputs(input, "ON")
     .toggleTabs(1:2, "ON")
     shinyjs::removeClass("display", "active_display")

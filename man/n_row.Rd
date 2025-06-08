@@ -2,7 +2,7 @@
 % Please edit documentation in R/cv.R
 \name{n_row}
 \alias{n_row}
-\title{The Number of Rows in a Numpy Array}
+\title{Number of Rows in a Numpy Array}
 \usage{
 n_row(x)
 }

@@ -6,9 +6,9 @@ shinyWidgets::verticalTabPanel(
   shiny::htmlOutput("video_status"),
   shiny::htmlOutput("tracks_status"),
 
-  tags$table(
-    tags$tr(
-      tags$td(
+  shiny::tags$table(
+    shiny::tags$tr(
+      shiny::tags$td(
         shinyFiles::shinyFilesButton(
           "video_file",
           "Select video",
@@ -18,9 +18,9 @@ shinyWidgets::verticalTabPanel(
         ),
         style = "width: 49%;"
       ),
-      tags$td(),
-      tags$td(
-        shinyFilesButton(
+      shiny::tags$td(),
+      shiny::tags$td(
+        shinyFiles::shinyFilesButton(
           "tracks_file",
           "Select tracks",
           "Please select a track file",
@@ -38,17 +38,17 @@ shinyWidgets::verticalTabPanel(
 
   shiny::p(shiny::strong("Keyboard navigation")),
 
-  tags$table(
+  shiny::tags$table(
     style = "width: 100%; text-align: center;",
-    tags$tr(
-      tags$td(),
-      tags$td("+ 1 sec.", style = "vertical-align: bottom;"),
-      tags$td()
+    shiny::tags$tr(
+      shiny::tags$td(),
+      shiny::tags$td("+ 1 sec.", style = "vertical-align: bottom;"),
+      shiny::tags$td()
     ),
-    tags$tr(
-      tags$td("- 1 frame", style = "vertical-align: bottom;"),
-      tags$td(
-        actionButton(
+    shiny::tags$tr(
+      shiny::tags$td("- 1 frame", style = "vertical-align: bottom;"),
+      shiny::tags$td(
+        shiny::actionButton(
           "plus_sec",
           shiny::icon(
             "caret-up",
@@ -59,11 +59,11 @@ shinyWidgets::verticalTabPanel(
           style = "padding: 0px;"
         )
       ),
-      tags$td("+ 1 frame", style = "vertical-align: bottom;")
+      shiny::tags$td("+ 1 frame", style = "vertical-align: bottom;")
     ),
-    tags$tr(
-      tags$td(
-        actionButton(
+    shiny::tags$tr(
+      shiny::tags$td(
+        shiny::actionButton(
           "minus_frame",
           shiny::icon(
             "caret-left",
@@ -74,8 +74,8 @@ shinyWidgets::verticalTabPanel(
           style = "padding: 0px;"
         )
       ),
-      tags$td(
-        actionButton(
+      shiny::tags$td(
+        shiny::actionButton(
           "minus_sec",
           shiny::div(
             shiny::div(shiny::icon(
@@ -88,8 +88,8 @@ shinyWidgets::verticalTabPanel(
           style = "padding: 0px;"
         )
       ),
-      tags$td(
-        actionButton(
+      shiny::tags$td(
+        shiny::actionButton(
           "plus_frame",
           shiny::icon(
             "caret-right",
@@ -101,18 +101,18 @@ shinyWidgets::verticalTabPanel(
         )
       )
     ),
-    tags$tr(
-      tags$td(),
-      tags$td("- 1 sec.", style = "vertical-align: top;"),
-      tags$td()
+    shiny::tags$tr(
+      shiny::tags$td(),
+      shiny::tags$td("- 1 sec.", style = "vertical-align: top;"),
+      shiny::tags$td()
     )
   ),
 
   shiny::hr(),
 
-  tags$table(
-    tags$tr(
-      tags$td(
+  shiny::tags$table(
+    shiny::tags$tr(
+      shiny::tags$td(
         shinyWidgets::awesomeRadio(
           inputId = "show_id",
           label = "Show IDs",
@@ -124,8 +124,8 @@ shinyWidgets::verticalTabPanel(
         ),
         style = "width: 49%; text-align:center;"
       ),
-      tags$td(),
-      tags$td(
+      shiny::tags$td(),
+      shiny::tags$td(
         shinyWidgets::awesomeRadio(
           inputId = "show_tracks",
           label = "Show tracks",
@@ -142,7 +142,7 @@ shinyWidgets::verticalTabPanel(
     class = "stateTable"
   ),
 
-  hr(),
+  shiny::hr(),
 
   shiny::tags$table(
     shiny::tags$tr(
@@ -158,8 +158,8 @@ shinyWidgets::verticalTabPanel(
         ),
         style = "width: 49%;"
       ),
-      tags$td(),
-      tags$td(
+      shiny::tags$td(),
+      shiny::tags$td(
         shiny::numericInput(
           "track_length_x",
           "Track length (frames):",
@@ -185,8 +185,8 @@ shinyWidgets::verticalTabPanel(
         ),
         style = "width: 49%;"
       ),
-      tags$td(),
-      tags$td(
+      shiny::tags$td(),
+      shiny::tags$td(
         shiny::numericInput(
           "tag_width_x",
           "Tag line width:",
@@ -204,7 +204,7 @@ shinyWidgets::verticalTabPanel(
 
   shiny::hr(),
 
-  shinySaveButton(
+  shinyFiles::shinySaveButton(
     "export_video",
     "Export video",
     "Save video as...",
@@ -212,5 +212,5 @@ shinyWidgets::verticalTabPanel(
     class = "fullWidth"
   ),
 
-  hr()
+  shiny::hr()
 )

@@ -1,5 +1,5 @@
 # Globals and reactives --------------------------------------------------
-volumes <- c(Home = fs::path_home(), getVolumes()())
+volumes <- c(Home = fs::path_home(), shinyFiles::getVolumes()())
 video_range <- c(0, 0)
 the_video <- NULL
 the_image <- NULL
@@ -22,17 +22,17 @@ refresh_stats <- shiny::reactiveVal(0)
 # UI ---------------------------------------------------------------------
 output$video_status <- shiny::renderUI({
   if (refresh_display() > -1 & !is_video_capture(the_video)) {
-    p("Video missing (and required).", class = "bad")
+    shiny::p("Video missing (and required).", class = "bad")
   } else if (!is_video_capture(the_video)) {
-    p("Incompatible videos.", class = "bad")
+    shiny::p("Incompatible videos.", class = "bad")
   } else {
     NULL
   }
 })
 
 output$tracks_status <- shiny::renderUI({
-  if (refresh_display() > -1 & !is.data.frame(the_tracks)) {
-    p("Tracks missing (and required).", class = "bad")
+  if (refresh_display() > -1 & !data.table::is.data.table(the_tracks)) {
+    shiny::p("Tracks missing (and required).", class = "bad")
   } else {
     NULL
   }
@@ -58,7 +58,7 @@ shiny::observeEvent(refresh_display(), {
       to_display <<- the_image$copy()
       sc <- max(c(n_row(to_display), n_col(to_display)) / 720)
 
-      if (is.data.frame(the_tracks)) {
+      if (data.table::is.data.table(the_tracks)) {
         void <- the_tracks[
           frame == the_frame() & ignore != TRUE,
           .drawBox(
@@ -368,9 +368,9 @@ shiny::observeEvent(input$plus_sec, {
 # Statistics -------------------------------------------------------------
 output$track_stats <- shiny::renderTable(
   {
-    if (is.data.frame(the_tracks) & refresh_stats() >= 0) {
+    if (data.table::is.data.table(the_tracks) & refresh_stats() >= 0) {
       tab <- table(the_tracks$track_fixed[!the_tracks$ignore])
-      data.frame(
+      data.table::data.table(
         "Tracks" = length(tab),
         "Shortest" = min(tab),
         "Longest" = max(tab),
@@ -378,7 +378,7 @@ output$track_stats <- shiny::renderTable(
         check.names = FALSE
       )
     } else {
-      data.frame(
+      data.table::data.table(
         "Tracks" = NA,
         "Shortest" = NA,
         "Longest" = NA,
@@ -401,7 +401,7 @@ shiny::observeEvent(input$qKey, {
 })
 
 shiny::observeEvent(input$reassign_track, {
-  if (is_video_capture(the_video) & is.data.frame(the_tracks)) {
+  if (is_video_capture(the_video) & data.table::is.data.table(the_tracks)) {
     ids <- c(
       "",
       the_tracks[
@@ -464,7 +464,7 @@ shiny::observeEvent(input$wKey, {
 })
 
 shiny::observeEvent(input$remove_track, {
-  if (is_video_capture(the_video) & is.data.frame(the_tracks)) {
+  if (is_video_capture(the_video) & data.table::is.data.table(the_tracks)) {
     ids <- c(
       "",
       the_tracks[
@@ -520,7 +520,7 @@ shiny::observeEvent(input$eKey, {
 })
 
 shiny::observeEvent(input$swap_track, {
-  if (is_video_capture(the_video) & is.data.frame(the_tracks)) {
+  if (is_video_capture(the_video) & data.table::is.data.table(the_tracks)) {
     ids <- c(
       "",
       the_tracks[
@@ -604,7 +604,7 @@ shiny::observeEvent(input$rKey, {
 })
 
 shiny::observeEvent(input$merge_track, {
-  if (is_video_capture(the_video) & is.data.frame(the_tracks)) {
+  if (is_video_capture(the_video) & data.table::is.data.table(the_tracks)) {
     ids <- c(
       "",
       the_tracks[
@@ -676,13 +676,6 @@ shiny::observeEvent(input$ok_merge, {
             c(x[2], y[2], width[2], height[2], angle[2]),
             5
           )
-
-          # pts_px <- rbind(
-          #   ellipse(x[1], y[1], width[1], height[1], angle[1], 5),
-          #   ellipse(x[2], y[2], width[2], height[2], angle[2], 5)
-          # )
-          # # ell_px <- amvee(pts_px)
-          # ell_px <- optim_ellipse(pts_px[, 1], pts_px[, 2])
 
           l[["track"]] <- c(id1, id2)
           l[["x"]] <- c(ell_px[1], x[!ix])
@@ -775,7 +768,7 @@ shiny::observeEvent(input$aKey, {
 })
 
 shiny::observeEvent(input$revert_changes, {
-  if (is_video_capture(the_video) & is.data.frame(the_tracks)) {
+  if (is_video_capture(the_video) & data.table::is.data.table(the_tracks)) {
     if (length(changes) > 0) {
       l <- length(changes)
       tmp <- the_tracks
@@ -815,7 +808,7 @@ shiny::observeEvent(input$sKey, {
 })
 
 shiny::observeEvent(input$save_changes, {
-  if (is.data.frame(the_tracks)) {
+  if (data.table::is.data.table(the_tracks)) {
     fixed_path <- paste0(
       sub(".csv|_fixed.csv", "", tracks_path()),
       "_fixed.csv"

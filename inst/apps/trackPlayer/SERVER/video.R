@@ -20,17 +20,17 @@ refresh_video <- shiny::reactiveVal(0)
 # UI
 output$video_status <- shiny::renderUI({
   if (refresh_display() > -1 & !is_video_capture(the_video)) {
-    p("Video missing (and required).", class = "bad")
+    shiny::p("Video missing (and required).", class = "bad")
   } else if (!is_video_capture(the_video)) {
-    p("Incompatible videos.", class = "bad")
+    shiny::p("Incompatible videos.", class = "bad")
   } else {
     NULL
   }
 })
 
 output$tracks_status <- shiny::renderUI({
-  if (refresh_display() > -1 & !is.data.frame(the_tracks)) {
-    p("Tracks missing (and required).", class = "bad")
+  if (refresh_display() > -1 & !data.table::is.data.table(the_tracks)) {
+    shiny::p("Tracks missing (and required).", class = "bad")
   } else {
     NULL
   }
@@ -64,7 +64,7 @@ shiny::observeEvent(refresh_display(), {
       to_display <<- the_image$copy()
       sc <- max(c(n_row(to_display), n_col(to_display)) / 720)
 
-      if (is.data.frame(the_tracks)) {
+      if (data.table::is.data.table(the_tracks)) {
         current_tracks <- the_tracks[frame == the_frame()]$track_fixed
         dt <- the_tracks[
           frame <= the_frame() &
@@ -412,7 +412,7 @@ shiny::observeEvent(input$export_video, {
 shiny::observeEvent(export_path(), {
   if (is_video_capture(the_video) & length(export_path()) > 0) {
     shinyjs::showElement("curtain")
-    showNotification("Exporting video.", id = "exporting", duration = NULL)
+    shiny::showNotification("Exporting video.", id = "exporting", duration = NULL)
 
     n <- input$video_controls_x[3] - input$video_controls_x[1] + 1
     the_video$set(cv2$CAP_PROP_POS_FRAMES, input$video_controls_x[1] - 1)
@@ -440,7 +440,7 @@ shiny::observeEvent(export_path(), {
       )
     }
 
-    pb <- Progress$new()
+    pb <- shiny::Progress$new()
     pb$set(message = "Processing: ", value = 0, detail = "0%")
     old_check <- 0
     old_frame <- 1
@@ -452,7 +452,7 @@ shiny::observeEvent(export_path(), {
         cv2$CAP_PROP_POS_FRAMES
       ))
 
-      if (is.data.frame(the_tracks)) {
+      if (data.table::is.data.table(the_tracks)) {
         current_tracks <- the_tracks[frame == current_frame]$track_fixed
         dt <- the_tracks[
           frame <= current_frame &

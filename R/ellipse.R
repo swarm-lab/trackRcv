@@ -72,12 +72,34 @@ ellipse <- function(x, y, width, height, angle, npoints = 100) {
 }
 
 
+#' @title Merge Two Ellipses
+#'
+#' @description This functions merges two ellipses by approximating their joint
+#'  ellipsoid hull, which is the ellipsoid of minimal area such that the 
+#'  periphery of each ellipse lie just inside or on the boundary of the 
+#'  ellipsoid.
+#'
+#' @param ell_1,ell_2 Numeric vector corresponding to the five parameters 
+#'  defining an ellipse: centroid of the ellipse (x, y), width, height, and 
+#'  angle (in degrees).
+#'
+#' @param n_points The number of points on each ellipse used to approximate 
+#'  their joint ellipsoid hull. 
+#' 
+#' @param ... Additional parameters to be passed to 
+#'  \link[cluster]{ellipsoidhull}. 
+#'
+#' @return A numeric vector corresponding to the five parameters defining the 
+#'  joint ellipse. 
+#'
+#' @author Simon Garnier, \email{garnier@@njit.edu}
+#'
 #' @export
-merge_ellipses <- function(ell1, ell2, n = 5) {
+merge_ellipses <- function(ell_1, ell_2, n_points = 5, ...) {
   pts <- rbind(
-    ellipse(ell1[1], ell1[2], ell1[3], ell1[4], ell1[5], n),
-    ellipse(ell2[1], ell2[2], ell2[3], ell2[4], ell2[5], n)
+    ellipse(ell_1[1], ell_1[2], ell_1[3], ell_1[4], ell_1[5], n_points),
+    ellipse(ell_2[1], ell_2[2], ell_2[3], ell_2[4], ell_2[5], n_points)
   )
-  hull <- cluster::ellipsoidhull(pts)
+  hull <- cluster::ellipsoidhull(pts, ...)
   .cov2shape(hull$cov, hull$loc)
 }

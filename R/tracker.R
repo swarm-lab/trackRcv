@@ -29,7 +29,8 @@ simplerTracker <- function(current, past, maxDist = 10) {
       tmp <- past[past$frame == f, ]
 
       if (nrow(tmp) > 0) {
-        mat <- abs(.pdiff(current$x, tmp$x)) + abs(.pdiff(current$y, tmp$y))
+        # mat <- abs(.pdiff(current$x, tmp$x)) + abs(.pdiff(current$y, tmp$y))
+        mat <- sqrt(.pdiff(current$x, tmp$x)^2 + .pdiff(current$y, tmp$y)^2)
         mat[!is.na(current$track), ] <- max(mat) * 2
 
         if (nrow(mat) > ncol(mat)) {
@@ -41,6 +42,7 @@ simplerTracker <- function(current, past, maxDist = 10) {
 
         valid <- mat[(h - 1) * nrow(mat) + 1:nrow(mat)] <=
           (maxDist * (current$frame[1] - f))
+
         h[!valid] <- NA
         current$track[!is.na(h)] <- tmp$track[h[!is.na(h)]]
 
@@ -118,7 +120,9 @@ kbox <- function(
   min.size = 0,
   split.sensitivity = 0
 ) {
-  if (!is.matrix(x)) x <- as.matrix(x)
+  if (!is.matrix(x)) {
+    x <- as.matrix(x)
+  }
 
   if (is.null(dim(centers))) {
     cl <- tryCatch(
@@ -136,7 +140,9 @@ kbox <- function(
       }
     )
   } else {
-    if (!is.matrix(centers)) centers <- as.matrix(centers)
+    if (!is.matrix(centers)) {
+      centers <- as.matrix(centers)
+    }
 
     cl <- tryCatch(
       CEC::cec(
@@ -177,9 +183,6 @@ kbox <- function(
     to_split <- test_width > 1 | test_height > 1 | test_density > 1
 
     if (any(to_split)) {
-      # tmp_cl <- CEC::cec(x, cl$nclusters, iter.max = iter.max, param = NULL,
-      #                    card.min = min.size, nstart = 10, threads = "auto")
-
       tmp_cl <- tryCatch(
         CEC::cec(
           x,
