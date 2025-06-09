@@ -19,7 +19,7 @@ indicating the location of the OpenCV installation and its version number.
 \description{
 This function automates the installation/updating of OpenCV and
 all its Python dependencies in a dedicated Python virtual environment for
-use with the \link{trackRcv} apps.
+use with the trackRcv apps.
 }
 \note{
 If the requested version of Python is not activated on your system, this

@@ -4,7 +4,7 @@
 \alias{fourcc}
 \title{Codec Name to FOURCC Code}
 \usage{
-fourcc(str)
+fourcc(x)
 }
 \arguments{
 \item{x}{A 4-element character chain corresponding to the name of a valid

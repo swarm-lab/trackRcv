@@ -13,9 +13,7 @@ RoxygenNote: 7.3.2
 URL: https://swarm-lab.github.io/trackRcv/
 Suggests: 
     knitr,
-    quarto,
-    testthat (>= 3.0.0)
-Config/testthat/edition: 3
+    quarto
 Imports: 
     autothresholdr (>= 1.4.2),
     CEC (>= 0.11.2),
@@ -30,6 +28,7 @@ Imports:
     Rfast (>= 2.1.5.1),
     Rfast2 (>= 0.1.5.4),
     shiny (>= 1.10.0),
+    shinyalert (>= 3.1.0),
     shinyFiles (>= 0.9.3),
     shinyjs (>= 2.1.0),
     shinyWidgets (>= 0.9.0),

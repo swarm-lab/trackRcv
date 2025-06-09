@@ -2,7 +2,7 @@
 #'
 #' @description This function automates the installation/updating of OpenCV and
 #'  all its Python dependencies in a dedicated Python virtual environment for
-#'  use with the \link{trackRcv} apps.
+#'  use with the trackRcv apps.
 #'
 #' @param python_version A character string indicating the version of Python you
 #'  would like OpenCV to run on (default: "3.12.5"). Not all versions of Python
@@ -449,8 +449,8 @@ col2bgr <- function(col, alpha = FALSE) {
 #' @author Simon Garnier, \email{garnier@@njit.edu}
 #'
 #' @export
-fourcc <- function(str) {
-  chars <- unlist(strsplit(str, split = ""))
+fourcc <- function(x) {
+  chars <- unlist(strsplit(x, split = ""))
   reticulate::py_to_r(cv2$VideoWriter_fourcc(
     chars[1],
     chars[2],
