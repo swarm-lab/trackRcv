@@ -26,10 +26,6 @@ the points.
 This functions computes \code{npoints} regularly spaced along an
 ellipse.
 }
-\examples{
-plot(ellipse(0, 0, 30, 50, 33), asp = 1)
-
-}
 \author{
 Simon Garnier, \email{garnier@njit.edu}
 }

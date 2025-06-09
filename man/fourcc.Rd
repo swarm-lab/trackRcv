@@ -20,10 +20,6 @@ An integer value corresponding to the FOURCC code of the video codec.
 into its corresponding \href{https://www.fourcc.org/codecs.php}{FOURCC}
 code.
 }
-\examples{
-fourcc("xvid")
-
-}
 \author{
 Simon Garnier, \email{garnier@njit.edu}
 }

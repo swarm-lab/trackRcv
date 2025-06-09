@@ -18,14 +18,6 @@ Shiny-based GUI to fix a posteriori common tracking errors, such
 as removing unwanted tracks, fixing swapped track IDs and reconnecting
 tracks.
 }
-\examples{
-# Run trackFixer in an external window
-\dontrun{trackFixer()}
-
-# Run trackFixer classic inside RStudio
-\dontrun{trackFixer(launch.browser = rstudioapi::viewer)}
-
-}
 \author{
 Simon Garnier, \email{garnier@njit.edu}
 }

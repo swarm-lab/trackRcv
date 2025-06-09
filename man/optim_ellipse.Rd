@@ -18,10 +18,6 @@ ellipse relative to the y axis in degrees.
 Given a set of x/y positions, this function attempts to find the
 best fitting ellipse that goes through these points.
 }
-\examples{
-optim_ellipse(rnorm(5), rnorm(5))
-
-}
 \author{
 Simon Garnier, \email{garnier@njit.edu}
 }

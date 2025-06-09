@@ -16,14 +16,6 @@ tracking is successfully completed.
 \description{
 A video tracking software with a Shiny-based GUI.
 }
-\examples{
-# Run trackR in an external window
-\dontrun{trackR()}
-
-# Run trackR classic inside RStudio
-\dontrun{trackR(launch.browser = rstudioapi::viewer)}
-
-}
 \author{
 Simon Garnier, \email{garnier@njit.edu}
 }

@@ -33,11 +33,6 @@ character: in all other cases the class is ignored when doing the coercion.)
 
 Zero and negative values of \code{col} are an error.
 }
-\examples{
-col2bgr("red")
-col2bgr(1:10)
-
-}
 \seealso{
 \code{\link{col2rgb}}, \code{\link{rgb}}, \code{\link{palette}}
 }
