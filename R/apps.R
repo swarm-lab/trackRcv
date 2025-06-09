@@ -9,13 +9,6 @@
 #'
 #' @author Simon Garnier, \email{garnier@@njit.edu}
 #'
-#' @examples
-#' # Run trackR in an external window
-#' \dontrun{trackR()}
-#'
-#' # Run trackR classic inside RStudio
-#' \dontrun{trackR(launch.browser = rstudioapi::viewer)}
-#'
 #' @export
 trackR <- function(...) {
   if (cv_installed()) {
@@ -39,13 +32,6 @@ trackR <- function(...) {
 #'
 #' @author Simon Garnier, \email{garnier@@njit.edu}
 #'
-#' @examples
-#' # Run trackFixer in an external window
-#' \dontrun{trackFixer()}
-#'
-#' # Run trackFixer classic inside RStudio
-#' \dontrun{trackFixer(launch.browser = rstudioapi::viewer)}
-#'
 #' @export
 trackFixer <- function(...) {
   if (cv_installed()) {
@@ -67,13 +53,6 @@ trackFixer <- function(...) {
 #'  button is used in the app.
 #'
 #' @author Simon Garnier, \email{garnier@@njit.edu}
-#'
-#' @examples
-#' # Run trackPlayer in an external window
-#' \dontrun{trackPlayer()}
-#'
-#' # Run trackPlayer classic inside RStudio
-#' \dontrun{trackPlayer(launch.browser = rstudioapi::viewer)}
 #'
 #' @export
 trackPlayer <- function(...) {

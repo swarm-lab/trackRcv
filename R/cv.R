@@ -423,10 +423,6 @@ n_col <- function(x) {
 #'
 #' @seealso \code{\link{col2rgb}}, \code{\link{rgb}}, \code{\link{palette}}
 #'
-#' @examples
-#' col2bgr("red")
-#' col2bgr(1:10)
-#'
 #' @export
 col2bgr <- function(col, alpha = FALSE) {
   if (alpha) {
@@ -451,9 +447,6 @@ col2bgr <- function(col, alpha = FALSE) {
 #' @return An integer value corresponding to the FOURCC code of the video codec.
 #'
 #' @author Simon Garnier, \email{garnier@@njit.edu}
-#'
-#' @examples
-#' fourcc("xvid")
 #'
 #' @export
 fourcc <- function(str) {

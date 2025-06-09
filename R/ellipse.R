@@ -11,9 +11,6 @@
 #'
 #' @author Simon Garnier, \email{garnier@@njit.edu}
 #'
-#' @examples
-#' optim_ellipse(rnorm(5), rnorm(5))
-#'
 #' @export
 optim_ellipse <- function(x, y) {
   md <- sqrt((max(x) - min(x))^2 + (max(y) - min(y))^2)
@@ -55,9 +52,6 @@ optim_ellipse <- function(x, y) {
 #'  the points.
 #'
 #' @author Simon Garnier, \email{garnier@@njit.edu}
-#'
-#' @examples
-#' plot(ellipse(0, 0, 30, 50, 33), asp = 1)
 #'
 #' @export
 ellipse <- function(x, y, width, height, angle, npoints = 100) {

@@ -99,15 +99,6 @@ simplerTracker <- function(current, past, maxDist = 10) {
 #'
 #' @author Simon Garnier, \email{garnier@@njit.edu}
 #'
-#' @examples
-#' x <- c(rnorm(25, 4), rnorm(25, -2))
-#' y <- c(rnorm(25, 2), rnorm(25, -3))
-#' k <- kbox(cbind(x, y), 2)
-#' plot(x, y, asp = 1)
-#' apply(k, 1, function(k) {
-#'   lines(ellipse(k[1], k[2], k[3], k[4], k[5]))
-#' })
-#'
 #' @export
 kbox <- function(
   x,

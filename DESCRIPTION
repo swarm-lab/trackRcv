@@ -4,8 +4,8 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Simon", "Garnier", , "garnier@njit.edu", role = c("aut", "cre"))
 Maintainer: Simon Garnier <garnier@njit.edu>
-Description: Simple video tracking software with Shiny-based GUI using 
-    traditional computer vision techniques.
+Description: This package contains a series of Shiny-based apps to perform 
+    object tracking in videos using traditional computer vision techniques.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
