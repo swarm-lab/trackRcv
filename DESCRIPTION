@@ -1,0 +1,38 @@
+Package: trackRcv
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+    person("Simon", "Garnier", , "garnier@njit.edu", role = c("aut", "cre"))
+Maintainer: Simon Garnier <garnier@njit.edu>
+Description: This package contains a series of Shiny-based apps to perform 
+    object tracking in videos using traditional computer vision techniques.
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+URL: https://swarm-lab.github.io/trackRcv/
+Suggests: 
+    knitr,
+    quarto
+Imports: 
+    autothresholdr (>= 1.4.2),
+    CEC (>= 0.11.2),
+    clue (>= 0.3.66),
+    cluster (>= 2.1.8.1),
+    data.table (>= 1.17.4),
+    grDevices,
+    mvoutlier (>= 2.1.1),
+    pals (>= 1.10),
+    pracma (>= 2.4.4),
+    reticulate (>= 1.42.0),
+    Rfast (>= 2.1.5.1),
+    Rfast2 (>= 0.1.5.4),
+    shiny (>= 1.10.0),
+    shinyalert (>= 3.1.0),
+    shinyFiles (>= 0.9.3),
+    shinyjs (>= 2.1.0),
+    shinyWidgets (>= 0.9.0),
+    stats,
+    stringr (>= 1.5.1),
+    utils
+VignetteBuilder: quarto
