@@ -36,11 +36,8 @@ track overlaid on top of them.
 
 ## Quick start guides
 
-+ [1 - Installation instructions](https://swarm-lab.github.io/trackR/articles/z1_install.html)
-+ [2 - Preparing videos (optional)](https://swarm-lab.github.io/trackR/articles/z2_videoFixer.html)
-+ [3 - Tracking videos](https://swarm-lab.github.io/trackR/articles/z3_trackR.html)
-+ [4 - Inspect and fix tracking results](https://swarm-lab.github.io/trackR/articles/z4_trackFixer.html)
-+ [5 - Export tracking results as video](https://swarm-lab.github.io/trackR/articles/z5_trackPlayer.html)
++ [1. Installing trackRcv](https://swarm-lab.github.io/trackRcv/articles/z1_installing_trackRcv.html)
++ More to come...
 
 ---
 
