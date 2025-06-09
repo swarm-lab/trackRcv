@@ -110,35 +110,11 @@ shinyWidgets::verticalTabPanel(
 
   shiny::hr(),
 
-  shiny::tags$table(
-    shiny::tags$tr(
-      shiny::tags$td(
-        shiny::numericInput(
-          "tag_scale_x",
-          "Tag scale:",
-          1.5,
-          0,
-          NA,
-          .1,
-          "100%"
-        ),
-        style = "width: 49%;"
-      ),
-      shiny::tags$td(),
-      shiny::tags$td(
-        shiny::numericInput(
-          "tag_width_x",
-          "Tag line width:",
-          4,
-          0,
-          NA,
-          1,
-          "100%"
-        ),
-        style = "width: 49%;"
-      )
-    ),
-    class = "settingsTable"
+  shiny::selectInput(
+    "suspect",
+    "Suspected issues",
+    c(),
+    width = "100%"
   ),
 
   shiny::hr(),
@@ -190,6 +166,39 @@ shinyWidgets::verticalTabPanel(
   shiny::hr(),
 
   shiny::tableOutput("track_stats"),
+
+  shiny::hr(),
+
+  shiny::tags$table(
+    shiny::tags$tr(
+      shiny::tags$td(
+        shiny::numericInput(
+          "tag_scale_x",
+          "Tag scale:",
+          1.5,
+          0,
+          NA,
+          .1,
+          "100%"
+        ),
+        style = "width: 49%;"
+      ),
+      shiny::tags$td(),
+      shiny::tags$td(
+        shiny::numericInput(
+          "tag_width_x",
+          "Tag line width:",
+          4,
+          0,
+          NA,
+          1,
+          "100%"
+        ),
+        style = "width: 49%;"
+      )
+    ),
+    class = "settingsTable"
+  ),
 
   shiny::hr()
 )

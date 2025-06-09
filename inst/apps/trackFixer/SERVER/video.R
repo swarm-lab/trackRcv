@@ -17,6 +17,7 @@ export_path <- shiny::reactiveVal()
 the_frame <- shiny::reactiveVal()
 refresh_video <- shiny::reactiveVal(0)
 refresh_stats <- shiny::reactiveVal(0)
+errors <- shiny::reactiveVal()
 
 
 # UI ---------------------------------------------------------------------
@@ -369,6 +370,24 @@ shiny::observeEvent(input$plus_sec, {
 output$track_stats <- shiny::renderTable(
   {
     if (data.table::is.data.table(the_tracks) & refresh_stats() >= 0) {
+      tmp <- the_tracks[ignore != TRUE][
+        order(frame),
+        .(first = frame[1], last = frame[.N]),
+        by = .(track_fixed)
+      ]
+      errors(rbind(
+        data.table::data.table(
+          track = tmp[first > 1]$track_fixed,
+          frame = tmp[first > 1]$first,
+          type = "appears"
+        ),
+        data.table::data.table(
+          track = tmp[last < max(the_tracks$frame)]$track_fixed,
+          frame = tmp[last < max(the_tracks$frame)]$last + 1,
+          type = "disappears"
+        )
+      )[order(frame)])
+
       tab <- table(the_tracks$track_fixed[!the_tracks$ignore])
       data.table::data.table(
         "Tracks" = length(tab),
@@ -394,6 +413,50 @@ output$track_stats <- shiny::renderTable(
 
 
 # Fix tracks -------------------------------------------------------------
+
+# Errors
+shiny::observeEvent(
+  errors(),
+  {
+    if (nrow(errors()) > 0) {
+      choices <- c("", paste0(errors()$frame, "_", errors()$track))
+      names(choices) <- c(
+        "↓ Select an issue to navigate to it ↓",
+        paste0(
+          "Frame ",
+          errors()$frame,
+          ": track ",
+          errors()$track,
+          " ",
+          errors()$type
+        )
+      )
+    } else {
+      choices <- c("")
+      names(choices) <- c("No issues detected")
+    }
+
+    shiny::updateSelectInput(session, "suspect", choices = choices)
+  },
+  ignoreInit = TRUE
+)
+
+shiny::observeEvent(
+  input$suspect,
+  {
+    if (is_video_capture(the_video)) {
+      vals <- input$video_controls_x
+      vals[2] <- as.numeric(sub("_.*", "", input$suspect))
+      shinyWidgets::updateNoUiSliderInput(
+        session,
+        "video_controls_x",
+        value = vals
+      )
+    }
+  },
+  ignoreInit = TRUE
+)
+
 
 # Reassign
 shiny::observeEvent(input$qKey, {
