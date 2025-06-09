@@ -19,10 +19,9 @@ knitr:
 
 ### 1.2. From GitHub
 
-You can install `trackRcv` and the rest of its dependencies by simply typing the 
-following command in your R console:
+You can install `trackRcv` and the rest of its dependencies by simply typing the following command in your R console:
 
-```{r}
+```{r, eval=FALSE}
 pak::pak("swarm-lab/trackRcv")
 ```
 
@@ -30,21 +29,16 @@ pak::pak("swarm-lab/trackRcv")
 
 ## 2. Setting up `trackRcv`
 
-Once the installation is complete, you will need to run the following command in 
-your R console:
+Once the installation is complete, you will need to run the following command in your R console:
 
-```{r}
+```{r, eval=FALSE}
 trackRcv::install_cv()
 ```
 
-This will create a dedicated Python virtual environment containing all the 
-Python dependencies that `trackRcv` needs to run. This environment will not 
-interfere with any other Python environments on your system, and it can be 
-removed at any time by running the following command:
+Answer “Yes” to all the questions. This will create a dedicated Python virtual environment containing all the Python dependencies that `trackRcv` needs to run. This environment will not interfere with any other Python environments on your system, and it can be removed at any time by running the following command:
 
-```{r}
+```{r, eval=FALSE}
 trackRcv::remove_cv()
 ```
 
-Once this is done, you can proceed to the next tutorial to learn how to use 
-`trackRcv`.
+Once this is done, you can proceed to the next tutorial to learn how to use `trackRcv`.
