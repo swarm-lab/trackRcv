@@ -20,7 +20,7 @@ Imports:
     clue (>= 0.3.66),
     cluster (>= 2.1.8.1),
     data.table (>= 1.17.4),
-    grDevices (>= 4.5.0),
+    grDevices,
     mvoutlier (>= 2.1.1),
     pals (>= 1.10),
     pracma (>= 2.4.4),
@@ -32,7 +32,7 @@ Imports:
     shinyFiles (>= 0.9.3),
     shinyjs (>= 2.1.0),
     shinyWidgets (>= 0.9.0),
-    stats (>= 4.5.0),
+    stats,
     stringr (>= 1.5.1),
-    utils (>= 4.5.0)
+    utils
 VignetteBuilder: quarto
