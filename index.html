@@ -37,6 +37,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/z1_installing_trackRcv.html">1. Installing trackRcv</a></li>
+    <li><a class="dropdown-item" href="articles/z3_tracking_objects.html">z3_tracking_objects</a></li>
   </ul>
 </li>
       </ul>
@@ -80,7 +81,6 @@
 <div class="section level2">
 <h2 id="faq">FAQ<a class="anchor" aria-label="anchor" href="#faq"></a>
 </h2>
-<p>–</p>
 <p><strong>How does trackRcv compare to other video tracking solutions? Did we really need another one?</strong></p>
 <p>trackRcv belongs to the category of the ‘classical’ tracking programs, similar in spirit to tracking software such as <a href="http://ctrax.sourceforge.net/" class="external-link"><code>Ctrax</code></a>, <a href="https://github.com/vivekhsridhar/tracktor" class="external-link"><code>tracktor</code></a>, and the sadly defunct <a href="https://en.wikibooks.org/wiki/SwisTrack" class="external-link"><code>SwisTrack</code></a>. It relies on good ol’ fashion image processing, robust cross-entropy clustering, and simple, yet efficient, assignment algorithms (the Hungarian method in this case). trackRcv does not use any fancy machine learning methods. The downside is that trackRcv’s tracking reliability may be inferior to more advanced software; the upside is that it does not require a beast of a computer to run.</p>
 <p>If trackRcv is not capable of tracking objects in your videos with the accuracy that you require, you can try its <a href="https://github.com/ultralytics/ultralytics" class="external-link">YOLO</a>-based AI counterpart, <a href="https://swarm-lab.github.io/trackRai" class="external-link">trackRai</a></p>
