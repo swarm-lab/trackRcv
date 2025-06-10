@@ -1,5 +1,5 @@
 ---
-title: "z3_tracking_objects"
+title: "3. Tracking"
 vignette: >
   %\VignetteIndexEntry{z3_tracking_objects}
   %\VignetteEngine{quarto::html}

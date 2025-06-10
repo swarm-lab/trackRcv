@@ -1,11 +1,11 @@
 Package: trackRcv
 Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: 
     person("Simon", "Garnier", , "garnier@njit.edu", role = c("aut", "cre"))
 Maintainer: Simon Garnier <garnier@njit.edu>
 Description: This package contains a series of Shiny-based apps to perform 
-    object tracking in videos using traditional computer vision techniques.
+    multi-object tracking in videos using traditional computer vision techniques.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
