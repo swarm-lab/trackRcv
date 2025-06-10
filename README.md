@@ -43,8 +43,6 @@ track overlaid on top of them.
 
 ## FAQ
 
---
-
 **How does trackRcv compare to other video tracking solutions? Did we really need another one?**
 
 trackRcv belongs to the category of the 'classical' tracking programs, similar 
