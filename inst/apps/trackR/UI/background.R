@@ -52,6 +52,6 @@ shinyjs::disabled(
       filetype = list(picture = c("png", "jpg")),
       class = "fullWidth"
     ),
-    shiny::p(style = "padding-bottom: 10px;")
+    shiny::hr()
   )
 )

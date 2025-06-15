@@ -114,7 +114,7 @@ shiny::observeEvent(refresh_display(), {
     data.table::setorder(gr, label)
     gr[, new_id := label]
 
-    for (j in 1:nrow(gr)) {
+    for (j in seq_len(nrow(gr))) {
       friends <- gr$new_id[gr$k == gr$k[j]]
       gr$new_id[gr$new_id %in% friends] <- gr$new_id[j]
     }
@@ -125,7 +125,7 @@ shiny::observeEvent(refresh_display(), {
 
     shape <- c()
 
-    for (j in 1:length(uid)) {
+    for (j in seq_len(length(uid))) {
       ix <- gr[, 3] == uid[j]
       ugr <- unique(gr[ix, 2])
       pos <- dt_mat[dt_mat[, 1] %in% gr[ix, 1], 2:3]

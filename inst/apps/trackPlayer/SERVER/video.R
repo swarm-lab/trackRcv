@@ -446,7 +446,7 @@ shiny::observeEvent(export_path(), {
     old_frame <- 1
     old_time <- Sys.time()
 
-    for (i in 1:n) {
+    for (i in seq_len(n)) {
       to_export <- the_video$read()[1]
       current_frame <- reticulate::py_to_r(the_video$get(
         cv2$CAP_PROP_POS_FRAMES
