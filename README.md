@@ -37,7 +37,8 @@ track overlaid on top of them.
 ## Quick start guides
 
 + [1. Installing trackRcv](https://swarm-lab.github.io/trackRcv/articles/z1_installing_trackRcv.html)
-+ More to come...
++ [2. Tracking objects](https://swarm-lab.github.io/trackRcv/articles/z2_tracking_objects.html)
++ [3. Fixing tracks](https://swarm-lab.github.io/trackRcv/articles/z3_fixing_tracks.html)
 
 ---
 
