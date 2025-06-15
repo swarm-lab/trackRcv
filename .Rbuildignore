@@ -7,3 +7,6 @@
 ^LICENSE\.md$
 ^vignettes/\.quarto$
 ^vignettes/*_files$
+^graveyard$
+^logo\.png$
+^logo\.svg$
