@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>2. Tracking • trackRcv</title>
+<title>2. Tracking objects • trackRcv</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="z2_tracking_objects_files/libs/quarto-html/popper.min.js"></script><script src="z2_tracking_objects_files/libs/quarto-html/tippy.umd.min.js"></script><link href="z2_tracking_objects_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="z2_tracking_objects_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="2. Tracking">
+<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="2. Tracking objects">
 <meta property="og:image" content="https://swarm-lab.github.io/trackRcv/logo.svg">
 </head>
 <body>
@@ -37,7 +37,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/z1_installing_trackRcv.html">1. Installing trackRcv</a></li>
-    <li><a class="dropdown-item" href="../articles/z2_tracking_objects.html">2. Tracking</a></li>
+    <li><a class="dropdown-item" href="../articles/z2_tracking_objects.html">2. Tracking objects</a></li>
+    <li><a class="dropdown-item" href="../articles/z3_fixing_tracks.html">3. Fixing tracks</a></li>
   </ul>
 </li>
       </ul>
@@ -53,7 +54,7 @@
 </nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.svg" class="logo" alt=""><h1>2. Tracking</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>2. Tracking objects</h1>
 
 
 
@@ -75,12 +76,17 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://swarm-lab.github.io/trackRcv/">trackRcv</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/trackR.html">trackR</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>This launch the app either in the viewer pane of RStudio and Positron, or in a separate window, depending on your local configuration. You can control where the app opens by setting the <code>launch.browser</code> option in <code>trackR</code> (see the help of <code><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">shiny::runApp</a></code> for an explanation of the <code>launch.browser</code> option).</p>
+<p>This will launch the app either in the viewer pane of RStudio and Positron, or in a separate window, depending on your local configuration. You can control where the app opens by setting the <code>shiny.launch.browser</code> option in the <code><a href="https://rdrr.io/r/base/options.html" class="external-link">options()</a></code> function. For instance:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>shiny.launch.browser <span class="op">=</span> <span class="va">.rs.invokeShinyWindowViewer</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>will launch the app in the RStudio viewer pane.</p>
 <hr></section><section class="level2"><h2 id="video-module">1. Video module<a class="anchor" aria-label="anchor" href="#video-module"></a>
 </h2>
 <p>The first step of the tracking process is to load a video file into the app. To do this, simply click the “Select video” button. This will bring up a navigator that you will use to locate the video file that you would like to track. Once you have located the video file in the navigator, click the “Select” button. <code>trackR</code> will open the video and display its first image in the display window (see below).</p>
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="images/z3_1.jpg" class="quarto-figure quarto-figure-center" style="border-radius: 5px; border-style: groove;"></p>
+<figure><p><img src="images/z2_1.jpg" class="quarto-figure quarto-figure-center" style="border-radius: 5px; border-style: groove;"></p>
 </figure>
 </div>
 <p>You can navigate through the video by sliding the green tab along the timeline displayed below the video. The gray tabs can be used to restrict the analysis to a specific time interval of the video.</p>
@@ -89,7 +95,7 @@
 </h2>
 <p>In the “Background module”, you can either choose to load an existing background image (e.g., an image of the empty experimental setup before the start of the experiment) or you can ask <code>trackR</code> to automatically reconstruct that background from the video.</p>
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="images/z3_2.jpg" class="quarto-figure quarto-figure-center" style="border-radius: 5px; border-style: groove;"></p>
+<figure><p><img src="images/z2_2.jpg" class="quarto-figure quarto-figure-center" style="border-radius: 5px; border-style: groove;"></p>
 </figure>
 </div>
 <p>If you choose to select an existing background image, just click on the “Select existing background” button and use the navigator to locate and select the desired image. You can then skip the rest of this section and go directly to <a href="#mask-module">the next section</a>.</p>
@@ -108,14 +114,14 @@
 <p>Once you have selected these two parameters, click on the on the “Automatically estimate background” button and <code>trackR</code> will start reconstructing the background from the video.</p>
 <hr>
 <p>In some occasions, like in the image on the left below, <code>trackR</code> will not reconstruct the background completely. This can happen, for instance, when an object did not move at all during the entirety of the video like it is the case here.</p>
-<p><img src="images/z3_3.jpg" class="quarto-figure quarto-figure-center" style="border-radius: 5px; border-style: groove;;width:49.0%"><img src="images/z3_4.jpg" class="quarto-figure quarto-figure-center" style="border-radius: 5px; border-style: groove;;width:49.0%"></p>
+<p><img src="images/z2_3.jpg" class="quarto-figure quarto-figure-center" style="border-radius: 5px; border-style: groove;;width:49.0%"><img src="images/z2_4.jpg" class="quarto-figure quarto-figure-center" style="border-radius: 5px; border-style: groove;;width:49.0%"></p>
 <p>You can fix some of these “ghosts” by clicking the “Select ghost for removal” button. This will allow you to draw a polygon around the object to remove from the background by using the left button of your mouse/trackpad. Once you have surrounded the object with a polygon, use the return key on your keyboard to close the polygon. <code>trackR</code> will then use the pixels surrounding the polygon that you traced to replace the object with its best guess about the color of the background below it.</p>
 <p>Once you are happy with background generated by <code>trackR</code>, you can click the “Save background file” button to save the background image for later (re)use.</p>
 <hr></section><section class="level2"><h2 id="mask-module">3. Mask module<a class="anchor" aria-label="anchor" href="#mask-module"></a>
 </h2>
 <p>The “Mask module“ is optional and can be skipped. It should be used if you would like to restrict tracking to specific areas of the image, for instance to exclude the outside of an experimental arena where things may be moving that should not be tracked (e.g., the hands of the experimenter). By default, <code>trackR</code> will use the entirety of the visible frame to perform the tracking.</p>
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="images/z3_5.jpg" class="quarto-figure quarto-figure-center" style="border-radius: 5px; border-style: groove;"></p>
+<figure><p><img src="images/z2_5.jpg" class="quarto-figure quarto-figure-center" style="border-radius: 5px; border-style: groove;"></p>
 </figure>
 </div>
 <p>The control panel of the “Mask module” allows you to either use an existing mask or to design your own. To use an existing mask, click the “Select existing mask” button and use the navigator to locate and select the desired mask image. A mask image should be a grayscale image of the same resolution of the video. Non-black portions of the image will be included in the tracking while black portion will be excluded. Different shades of gray can be used to delimit different parts of the mask.</p>
@@ -127,13 +133,13 @@
 <li>“Add ellipse ROI” allows you to draw an ellipse on the mask by indicating 5 points along the periphery of the area of interest. Use the left button of your mouse/trackpad for this. Once you have finished adding the 5 points, <code>trackR</code> will compute the ellipse best fitting them. It is recommended to select 5 points that are roughly equidistant along the periphery of the area of interest. If the “Including” radio button is selected, then the area inside the ellipse will be included in the tracking. Otherwise, it will be excluded.</li>
 <li>“ROI id” allows you to assign a unique identifier to each region of interest, allowing for separating the tracking of objects in each of them in post-processing.</li>
 </ul>
-<p><img src="images/z3_6.jpg" class="quarto-figure quarto-figure-center" style="border-radius: 5px; border-style: groove;;width:49.0%"><img src="images/z3_7.jpg" class="quarto-figure quarto-figure-center" style="border-radius: 5px; border-style: groove;;width:49.0%"></p>
+<p><img src="images/z2_6.jpg" class="quarto-figure quarto-figure-center" style="border-radius: 5px; border-style: groove;;width:49.0%"><img src="images/z2_7.jpg" class="quarto-figure quarto-figure-center" style="border-radius: 5px; border-style: groove;;width:49.0%"></p>
 <p>You can combine including/excluding polygons and ellipses to define a mask as complex and detailed as you would like. Included areas will take a slightly greener tint in the display window while excluded areas will take a slightly more red tint (see images above).</p>
 <p>Once you are satisfied with your design, you can save it for later (re)use by clicking the “Save mask file” button.</p>
 <hr></section><section class="level2"><h2 id="segmentation-module">4. Segmentation module<a class="anchor" aria-label="anchor" href="#segmentation-module"></a>
 </h2>
 <p>Segmentation is the process of isolating objects of interests from the background of an image. In order to do so, <code>trackR</code> first needs to know whether it is looking for objects that are darker or lighter than the background. You can do so by ticking the appropriate radio button at the top of the control panel in the “Segmentation module”.</p>
-<p><img src="images/z3_8.jpg" style="border-radius: 5px; border-style: groove;"></p>
+<p><img src="images/z2_8.jpg" style="border-radius: 5px; border-style: groove;"></p>
 <p>Once this is done, <code>trackR</code> will need to know how different from the background a pixel must be to be considered a part of one of the objects to track. In order to indicate that information to <code>trackR</code>, you can use the threshold slider in the control panel. They will allow you to set the threshold difference above which a pixel is considered a part of an object and not a part of the background.</p>
 <p>The objective is to find a threshold that creates a good separation between the objects to track and the background. You can see the result of changing the thresholds in the display window: all the parts of the image that are considered an object given the threshold will be surrounded by a green line (see image above). A good threshold will result in green lines tightly following the edges of the objects to track.</p>
 <p>You can also let <code>trackR</code> search for a good threshold by clicking the “Autothreshold” button in the control panel. <code>trackR</code> can use multiple methods to estimate a threshold that provides good segmentation results. You can try select a method using the dropdown menu next to the “Autothreshold” button, and observe their effect by running the autothresholding operation again. You can then tweak manually this suggested threshold if you want.</p>
@@ -149,12 +155,12 @@
 <li>Their density, that is the ratio between their surface area and the surface area of the ellipse that is enclosing the object (objects with a high density resemble better perfect ellipses).</li>
 </ul>
 <p>You can set these parameters manually using the corresponding input boxes in the control panel of the “Identification module”. You can also let <code>trackR</code> search for good values for these parameters by clicking the “Auto parameters” button in the control panel. <code>trackR</code> will look for parameters that provide good separation results in general. You can then tweak manually these suggested parameters if you want.</p>
-<p><img src="images/z3_9.jpg" style="border-radius: 5px; border-style: groove;"></p>
+<p><img src="images/z2_9.jpg" style="border-radius: 5px; border-style: groove;"></p>
 <p>It is recommended to look at the result of the identification process in different parts of the video using the control slider below the video display. This will ensure that the selected parameters give good results throughout the video.</p>
 <hr></section><section class="level2"><h2 id="scaling-module">6. Scaling module<a class="anchor" aria-label="anchor" href="#scaling-module"></a>
 </h2>
 <p>By default, <code>trackR</code> will set the origin of the coordinate system to the top-left corner of the video. You can change this by clicking the “Set origin” button in the control panel. You then use your mouse to click on the location in the video frame where you want the origin to be.</p>
-<p><img src="images/z3_10.jpg" style="border-radius: 5px; border-style: groove;"></p>
+<p><img src="images/z2_10.jpg" style="border-radius: 5px; border-style: groove;"></p>
 <p>You can also set a scaling factor for directly converting the pixel coordinates into real-world coordinates. For this, click on the “Set scale” button in the control panel. You then use your mouse to select two points in the video frame that are known to be at a certain distance apart in the real world. A pop-up window will ask you to enter the distance between these two points and the unit of measurement you want to use. <code>trackR</code> will then automatically convert all the tracking results into real-world coordinates for you.</p>
 <hr></section><section class="level2"><h2 id="tracking-module">7. Tracking module<a class="anchor" aria-label="anchor" href="#tracking-module"></a>
 </h2>
@@ -165,9 +171,9 @@
 <li>“Maximum distance” controls the maximum distance in pixels that an object can move between two frames to be still considered as belonging to the same track.</li>
 <li>“Preview tracks during tracking” controls whether a preview of the tracking results should be displayed during the tracking process. The preview shows 1 frame per second of the video with the trajectories overlaid on top. This will slow down a bit the tracking process, but this can be used to check that the tracking is working well when deciding on the right set of tracking parameters.</li>
 </ul>
-<p><img src="images/z3_11.jpg" style="border-radius: 5px; border-style: groove;"></p>
+<p><img src="images/z2_11.jpg" style="border-radius: 5px; border-style: groove;"></p>
 <p>Once all is set, you can finally click on the “Start tracking” button, set a file in the navigator that pops up to store the tracking data, and just let <code>trackR</code> works its magic. The data will be saved as a CSV file and <a href="#output">the next section</a> will detail the content of this file.</p>
-<p><img src="images/z3_12.jpg" style="border-radius: 5px; border-style: groove;"></p>
+<p><img src="images/z2_12.jpg" style="border-radius: 5px; border-style: groove;"></p>
 <hr></section><section class="level2"><h2 id="output">8. Output data<a class="anchor" aria-label="anchor" href="#output"></a>
 </h2>
 <p>Once <code>trackR</code> is done tracking the video, the resulting CSV file will contain between 8 and 12 columns depending on whether you have set a real-world scale and origin in the “Scale module”. These columns will be the following:</p>
