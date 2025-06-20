@@ -2,19 +2,28 @@
 % Please edit documentation in R/apps.R
 \name{trackR}
 \alias{trackR}
-\title{Video Tracking App}
+\title{App Launcher}
 \usage{
 trackR(...)
 }
 \arguments{
-\item{...}{Arguments passed to \link[shiny]{runApp}.}
+\item{...}{Parameters to be passed to \code{\link[shiny:runApp]{shiny::runApp()}}.}
 }
 \value{
-This function does not return anything. A file is saved if the
-tracking is successfully completed.
+This function does not return anything.
 }
 \description{
-A video tracking software with a Shiny-based GUI.
+This function starts an app launcher that gives the user access
+to all the Shiny apps provided with trackRcv.
+}
+\examples{
+\dontrun{
+trackR()
+}
+
+}
+\seealso{
+\code{\link[shiny:runApp]{shiny::runApp()}}
 }
 \author{
 Simon Garnier, \email{garnier@njit.edu}

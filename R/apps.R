@@ -1,63 +1,26 @@
-#' @title Video Tracking App
+#' @title App Launcher
 #'
-#' @description A video tracking software with a Shiny-based GUI.
+#' @description This function starts an app launcher that gives the user access
+#'  to all the Shiny apps provided with trackRcv. 
 #'
-#' @param ... Arguments passed to \link[shiny]{runApp}.
+#' @param ... Parameters to be passed to [shiny::runApp()].
 #'
-#' @return This function does not return anything. A file is saved if the
-#'  tracking is successfully completed.
+#' @return This function does not return anything.
 #'
 #' @author Simon Garnier, \email{garnier@@njit.edu}
+#' 
+#' @seealso [shiny::runApp()]
+#'
+#' @examples
+#' \dontrun{
+#' trackR()
+#' }
 #'
 #' @export
 trackR <- function(...) {
   if (cv_installed()) {
-    shiny::runApp(paste0(find.package("trackRcv"), "/apps/trackR"), ...)
-  } else {
-    stop("OpenCV was not detected. Install it with `trackRcv::install_cv()`.")
-  }
-}
-
-
-#' @title Fix Tracking Errors
-#'
-#' @description Shiny-based GUI to fix a posteriori common tracking errors, such
-#'  as removing unwanted tracks, fixing swapped track IDs and reconnecting
-#'  tracks.
-#'
-#' @param ... Arguments passed to \link[shiny]{runApp}.
-#'
-#' @return This function does not return anything. A file is saved if the save
-#'  button is used in the app.
-#'
-#' @author Simon Garnier, \email{garnier@@njit.edu}
-#'
-#' @export
-trackFixer <- function(...) {
-  if (cv_installed()) {
-    shiny::runApp(paste0(find.package("trackRcv"), "/apps/trackFixer"), ...)
-  } else {
-    stop("OpenCV was not detected. Install it with `trackRcv::install_cv()`.")
-  }
-}
-
-
-#' @title Display and Export Video with Track Overlay
-#'
-#' @description Shiny-based GUI to display and export a video with tracks
-#'  overlaid on top.
-#'
-#' @param ... Arguments passed to \link[shiny]{runApp}.
-#'
-#' @return This function does not return anything. A file is saved if the export
-#'  button is used in the app.
-#'
-#' @author Simon Garnier, \email{garnier@@njit.edu}
-#'
-#' @export
-trackPlayer <- function(...) {
-  if (cv_installed()) {
-    shiny::runApp(paste0(find.package("trackRcv"), "/apps/trackPlayer"), ...)
+    shiny::shinyOptions(shiny.launch.browser = list(...)$launch.browser)
+    shiny::runApp(paste0(find.package("trackRcv"), "/apps/launcher"), ...)
   } else {
     stop("OpenCV was not detected. Install it with `trackRcv::install_cv()`.")
   }
