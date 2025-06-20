@@ -12,20 +12,24 @@ knitr:
 
 ## 0. Introduction
 
-Once you have finished tracking a video, you can manually inspect the results and fix any potential error using the `trackFixer` app provided with the package. You can launch `trackFixer` by typing the following command in the R console:
+Once you have finished tracking a video, you can manually inspect the results and fix any potential error using the track fixing app provided with the package. You can launch the app by typing the following command in the R console:
 
 ```{r, eval=FALSE}
 library(trackRcv)
-trackFixer()
+trackR()
 ```
 
-This will launch the app either in the viewer pane of RStudio and Positron, or in a separate window, depending on your local configuration. You can control where the app opens by setting the `shiny.launch.browser` option in the `options()` function. For instance:
+![](images/z0.jpg){style="border-radius: 5px; border-style: groove;" fig-align="center"}
+
+This will open the app launcher either in the viewer pane of RStudio and Positron, or in a separate window, depending on your local configuration. In RStudio at least, you can control where the app opens by setting the `launch.browser` option. For instance: 
 
 ```{r, eval=FALSE}
-options(shiny.launch.browser = .rs.invokeShinyPaneViewer)
+trackR(launch.browser = shiny::paneViewer())
 ```
 
-will launch the app in the RStudio viewer pane.
+will launch the app in the RStudio viewer pane. 
+
+Once the launcher is running, click on the “Fix” button to launch the tracking app. The launcher will close and the app will start shortly after. 
 
 ------------------------------------------------------------------------
 
