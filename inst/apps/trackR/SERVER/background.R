@@ -187,14 +187,12 @@ shiny::observeEvent(input$ghost_button, {
 shinyjs::onevent("click", "display_img", function(props) {
   if (collect_ghost() > 0) {
     x <- n_col(to_display) * (props$offsetX / input$display_img_width)
-    y <- n_row(to_display) *
-      (props$offsetY / input$display_img_height)
+    y <- n_row(to_display) * (props$offsetY / input$display_img_height)
     ghost_coords <<- rbind(ghost_coords, c(x, y))
     refresh_display(refresh_display() + 1)
   } else if (collect_mask() > 0) {
     x <- n_col(to_display) * (props$offsetX / input$display_img_width)
-    y <- n_row(to_display) *
-      (props$offsetY / input$display_img_height)
+    y <- n_row(to_display) * (props$offsetY / input$display_img_height)
     mask_coords <<- rbind(mask_coords, c(x, y))
 
     if (collect_mask() == 2 & nrow(mask_coords) >= 5) {
@@ -204,8 +202,7 @@ shinyjs::onevent("click", "display_img", function(props) {
     refresh_display(refresh_display() + 1)
   } else if (collect_origin() > 0) {
     x <- n_col(to_display) * (props$offsetX / input$display_img_width)
-    y <- n_row(to_display) *
-      (props$offsetY / input$display_img_height)
+    y <- n_row(to_display) * (props$offsetY / input$display_img_height)
     origin(c(x, y))
     stop_origin_collection(stop_origin_collection() + 1)
     refresh_display(refresh_display() + 1)

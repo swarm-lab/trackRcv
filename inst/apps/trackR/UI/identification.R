@@ -4,7 +4,6 @@ shinyjs::disabled(
     box_height = "100%",
     shiny::p("Identification module", class = "module-title"),
     shiny::hr(),
-    shiny::htmlOutput("id_status", container = p, class = "good"),
 
     shiny::tags$table(
       style = "margin-bottom: -15px",

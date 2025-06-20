@@ -3,7 +3,7 @@ do_bookmark_exclude <- shiny::reactiveVal(0)
 
 
 # Reset state
-shiny::observeEvent(input$reset_x, {
+shiny::observeEvent(input$reset, {
   url <- paste0(
     "http://",
     session$clientData$url_hostname,

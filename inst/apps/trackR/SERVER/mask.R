@@ -35,7 +35,7 @@ shiny::observeEvent(refresh_display(), {
 # Display
 shiny::observeEvent(refresh_display(), {
   if (input$main == "3") {
-    if (is_image(the_mask)) {
+    if (is_image(the_mask) & is_image(the_background)) {
       gray <- cv2$cvtColor(the_mask, cv2$COLOR_BGR2GRAY)
       green <- gray$copy()
       green[green > 0] <- 255L

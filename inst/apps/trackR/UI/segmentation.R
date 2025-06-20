@@ -4,7 +4,6 @@ shinyjs::disabled(
     box_height = "100%",
     shiny::p("Segmentation module", class = "module-title"),
     shiny::hr(),
-    shiny::htmlOutput("segmentation_status", container = p, class = "good"),
     shiny::div(
       style = "text-align: center;",
       shinyWidgets::awesomeRadio(

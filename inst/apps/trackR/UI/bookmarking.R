@@ -37,7 +37,7 @@ shinyWidgets::verticalTabsetPanel(
       shiny::tags$tr(
         shiny::tags$td(
           colspan = "3",
-          shiny::actionButton("reset_x", "Reset state", width = "100%")
+          shiny::actionButton("reset", "Reset state", width = "100%")
         )
       ),
 

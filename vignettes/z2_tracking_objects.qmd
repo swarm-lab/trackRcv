@@ -22,7 +22,7 @@ trackR()
 This will launch the app either in the viewer pane of RStudio and Positron, or in a separate window, depending on your local configuration. You can control where the app opens by setting the `shiny.launch.browser` option in the `options()` function. For instance: 
 
 ```{r, eval=FALSE}
-options(shiny.launch.browser = .rs.invokeShinyWindowViewer)
+options(shiny.launch.browser = .rs.invokeShinyPaneViewer)
 ```
 
 will launch the app in the RStudio viewer pane. 

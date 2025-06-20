@@ -4,7 +4,7 @@ video_range <- c(0, 0)
 the_video <- NULL
 the_image <- NULL
 the_tracks <- NULL
-col_names <- c("x", "y", "n", "frame", "track", "width", "height", "angle")
+col_names <- c("x", "y", "frame", "track", "width", "height", "angle")
 col_types <- rep("numeric", length(col_names))
 names(col_types) <- col_names
 
