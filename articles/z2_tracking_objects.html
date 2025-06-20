@@ -70,18 +70,23 @@
 
     <section class="level2"><h2 id="introduction">0. Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Once you are ready to track a video, you can launch the tracking app (<code>trackR</code>) by typing the following command in the R console:</p>
+<p>Once you are ready to track a video, you can launch the tracking app by typing the following command in the R console:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://swarm-lab.github.io/trackRcv/">trackRcv</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/trackR.html">trackR</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>This will launch the app either in the viewer pane of RStudio and Positron, or in a separate window, depending on your local configuration. You can control where the app opens by setting the <code>launch.browser</code> option. For instance:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure><p><img src="images/z0.jpg" class="quarto-figure quarto-figure-center" style="border-radius: 5px; border-style: groove;"></p>
+</figure>
+</div>
+<p>This will open the app launcher either in the viewer pane of RStudio and Positron, or in a separate window, depending on your local configuration. In RStudio at least, you can control where the app opens by setting the <code>launch.browser</code> option. For instance:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/trackR.html">trackR</a></span><span class="op">(</span>launch.browser <span class="op">=</span> <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/viewer.html" class="external-link">paneViewer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>will launch the app in the RStudio viewer pane.</p>
+<p>Once the launcher is running, click on the “Track” button to launch the tracking app. The launcher will close and the app will start shortly after.</p>
 <hr></section><section class="level2"><h2 id="video-module">1. Video module<a class="anchor" aria-label="anchor" href="#video-module"></a>
 </h2>
 <p>The first step of the tracking process is to load a video file into the app. To do this, simply click the “Select video” button. This will bring up a navigator that you will use to locate the video file that you would like to track. Once you have located the video file in the navigator, click the “Select” button. <code>trackR</code> will open the video and display its first image in the display window (see below).</p>
