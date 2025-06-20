@@ -16,6 +16,7 @@ library(shiny)
 library(shinyWidgets)
 library(shinyFiles)
 library(shinyjs)
+library(shinyalert)
 library(stringr)
 library(data.table)
 library(pals)
@@ -78,8 +79,7 @@ server <- function(input, output, session) {
   source("../share/r/drawers.R", local = TRUE)
   source("SERVER/controls.R", local = TRUE)
   source("SERVER/video.R", local = TRUE)
-  session$onSessionEnded(function() {
-  })
+  session$onSessionEnded(function() {})
 }
 
 shiny::shinyApp(ui = ui, server = server, enableBookmarking = "url")

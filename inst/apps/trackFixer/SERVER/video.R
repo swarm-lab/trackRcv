@@ -4,7 +4,7 @@ video_range <- c(0, 0)
 the_video <- NULL
 the_image <- NULL
 the_tracks <- NULL
-col_names <- c("x", "y", "n", "frame", "track", "width", "height", "angle")
+col_names <- c("x", "y", "frame", "track", "width", "height", "angle")
 col_types <- rep("numeric", length(col_names))
 names(col_types) <- col_names
 changes <- list()
@@ -508,14 +508,38 @@ shiny::observeEvent(input$ok_reassign, {
   new_id <- input$new_ID
 
   if (!is.na(old_id) & !is.na(new_id)) {
-    idx <- the_tracks[, track_fixed] == old_id
-    the_tracks[idx, track_fixed := new_id]
-    changes[[length(changes) + 1]] <<- list(
-      frame = input$video_controls_x[2],
-      type = "reassign",
-      idx = which(idx),
-      revert = as.numeric(old_id)
-    )
+    ok <- !any(the_tracks[
+      track_fixed == old_id | track_fixed == new_id,
+      .(dup = .N > 1),
+      by = frame
+    ][, dup])
+
+    # ok <- !any(
+    #   the_tracks[frame == input$video_controls_x[2], track_fixed] == new_id
+    # )
+
+    if (ok) {
+      idx <- the_tracks[, track_fixed] == old_id
+      the_tracks[idx, track_fixed := new_id]
+      changes[[length(changes) + 1]] <<- list(
+        frame = input$video_controls_x[2],
+        type = "reassign",
+        idx = which(idx),
+        revert = as.numeric(old_id)
+      )
+    } else {
+      shinyalert::shinyalert(
+        title = "ID conflict",
+        text = paste0(
+          "The chosen ID conflicts with an existing one.",
+          "\nPlease choose another one."
+        ),
+        type = "error",
+        timer = 3000,
+        closeOnClickOutside = TRUE
+      )
+    }
+
     refresh_stats(refresh_stats() + 1)
     refresh_display(refresh_display() + 1)
   }
