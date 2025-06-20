@@ -12,20 +12,24 @@ knitr:
 
 ## 0. Introduction
 
-Once you are ready to track a video, you can launch the tracking app (`trackR`) by typing the following command in the R console:
+Once you are ready to track a video, you can launch the tracking app by typing the following command in the R console:
 
 ```{r, eval=FALSE}
 library(trackRcv)
 trackR()
 ```
 
-This will launch the app either in the viewer pane of RStudio and Positron, or in a separate window, depending on your local configuration. You can control where the app opens by setting the `launch.browser` option. For instance: 
+![](images/z0.jpg){style="border-radius: 5px; border-style: groove;" fig-align="center"}
+
+This will open the app launcher either in the viewer pane of RStudio and Positron, or in a separate window, depending on your local configuration. In RStudio at least, you can control where the app opens by setting the `launch.browser` option. For instance: 
 
 ```{r, eval=FALSE}
 trackR(launch.browser = shiny::paneViewer())
 ```
 
 will launch the app in the RStudio viewer pane. 
+
+Once the launcher is running, click on the “Track” button to launch the tracking app. The launcher will close and the app will start shortly after. 
 
 ------------------------------------------------------------------------
 
