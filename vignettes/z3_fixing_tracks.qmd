@@ -19,23 +19,23 @@ library(trackRcv)
 trackR()
 ```
 
-![](images/z0.jpg){style="border-radius: 5px; border-style: groove;" fig-align="center"}
+![](images/z0.jpg){fig-align="center" style="border-radius: 5px; border-style: groove;" width="40%"}
 
-This will open the app launcher either in the viewer pane of RStudio and Positron, or in a separate window, depending on your local configuration. In RStudio at least, you can control where the app opens by setting the `launch.browser` option. For instance: 
+This will open the app launcher either in the viewer pane of RStudio and Positron, or in a separate window, depending on your local configuration. In RStudio at least, you can control where the app opens by setting the `launch.browser` option. For instance:
 
 ```{r, eval=FALSE}
 trackR(launch.browser = shiny::paneViewer())
 ```
 
-will launch the app in the RStudio viewer pane. 
+will launch the app in the RStudio viewer pane.
 
-Once the launcher is running, click on the “Fix” button to launch the tracking app. The launcher will close and the app will start shortly after. 
+Once the launcher is running, click on the “Fix” button to launch the tracking app. The launcher will close and the app will start shortly after.
 
 ------------------------------------------------------------------------
 
 ## 1. Fixer module
 
-The first step of the fixing process is to load a video file and the tracking data into the app. To do this, simply click the “Select video” button. This will bring up a navigator that you will use to locate the video file that you would like to track. Once you have located the video file in the navigator, click the “Select” button. `trackFixer` will open the video and display its first image in the display window (see below).
+The first step of the fixing process is to load a video file and the tracking data into the app. To do this, simply click the “Select video” button. This will bring up a navigator that you will use to locate the video file that you would like to track. Once you have located the video file in the navigator, click the “Select” button. The app will open the video and display its first image in the display window (see below).
 
 Repeat the process with “Select tracks” button to load the tracking data. Once this is done, the tracked objects should be indicated by a colored box with a number corresponding to their tracked identity (see below).
 
@@ -62,7 +62,7 @@ Finally, at the very bottom of control panel, you can modify the “Tag scale”
 
 ## 2. Output data {#output}
 
-Once you click the “Save” button in `trackFixer`, the data that is saved in the “\[original_file_name\]\_fixed.csv” file has the same columns has those saved originally by `trackR` (see [here for more details](z2_tracking_objects.html#output)).
+Once you click the “Save” button in the app, the data that is saved in the “\[original_file_name\]\_fixed.csv” file has the same columns has those saved originally by `trackR` (see [here for more details](z2_tracking_objects.html#output)).
 
 The file will also contain 2 additional columns:
 
