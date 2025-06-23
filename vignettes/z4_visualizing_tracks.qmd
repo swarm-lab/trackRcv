@@ -1,5 +1,6 @@
 ---
 title: "4. Visualizing tracks"
+author: "Simon Garnier"
 vignette: >
   %\VignetteIndexEntry{4. Visualizing tracks}
   %\VignetteEngine{quarto::html}

@@ -27,8 +27,14 @@ local <- new.env()
 .onAttach <- function(lib, pkg) {
   if (!cv_installed()) {
     if (interactive()) {
-      msg <- install_cv()
-      print.table(msg)
+      trackRai_installed <- tryCatch(
+        is.character(find.package("trackRai")),
+        error = function(e) FALSE
+      )
+      if (!trackRai_installed) {
+        msg <- install_cv()
+        print.table(msg)
+      }
     }
   }
 }

@@ -1,5 +1,6 @@
 ---
 title: "3. Fixing tracks"
+author: "Simon Garnier"
 vignette: >
   %\VignetteIndexEntry{3. Fixing tracks}
   %\VignetteEngine{quarto::html}
