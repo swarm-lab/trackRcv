@@ -1,7 +1,7 @@
 ---
 title: "4. Visualizing tracks"
 vignette: >
-  %\VignetteIndexEntry{z4_visualizing_tracks}
+  %\VignetteIndexEntry{4. Visualizing tracks}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 knitr:

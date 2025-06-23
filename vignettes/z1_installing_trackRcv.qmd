@@ -2,7 +2,7 @@
 title: "1. Installing trackRcv"
 author: "Simon Garnier"
 vignette: >
-  %\VignetteIndexEntry{z1_installing_trackRcv}
+  %\VignetteIndexEntry{1. Installing trackRcv}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 knitr:
