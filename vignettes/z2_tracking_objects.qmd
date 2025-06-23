@@ -1,5 +1,6 @@
 ---
 title: "2. Tracking objects"
+author: "Simon Garnier"
 vignette: >
   %\VignetteIndexEntry{2. Tracking objects}
   %\VignetteEngine{quarto::html}
