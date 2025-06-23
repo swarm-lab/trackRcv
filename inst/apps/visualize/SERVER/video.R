@@ -66,58 +66,61 @@ shiny::observeEvent(refresh_display(), {
 
       if (data.table::is.data.table(the_tracks)) {
         current_tracks <- the_tracks[frame == the_frame()]$track_fixed
-        dt <- the_tracks[
-          frame <= the_frame() &
-            frame >= (the_frame() - input$track_length_x) &
-            track_fixed %in% current_tracks
-        ]
 
-        void <- dt[
-          frame == the_frame(),
-          .drawBox(
-            to_display,
-            .SD$x,
-            .SD$y,
-            .SD$width,
-            .SD$height,
-            .SD$angle,
-            .shades[, (.BY$track_fixed %% ncol(.shades)) + 1],
-            c(255, 255, 255),
-            input$track_width_x
-          ),
-          by = .(track_fixed)
-        ]
+        if (length(current_tracks) > 0) {
+          dt <- the_tracks[
+            frame <= the_frame() &
+              frame >= (the_frame() - input$track_length_x) &
+              track_fixed %in% current_tracks
+          ]
 
-        if (input$show_tracks == "Yes") {
-          void <- dt[,
-            .drawPolyLine(
+          void <- dt[
+            frame == the_frame(),
+            .drawBox(
               to_display,
-              cbind(.SD$x, .SD$y),
-              FALSE,
+              .SD$x,
+              .SD$y,
+              .SD$width,
+              .SD$height,
+              .SD$angle,
               .shades[, (.BY$track_fixed %% ncol(.shades)) + 1],
               c(255, 255, 255),
               input$track_width_x
             ),
-            by = .(track_fixed),
-            .SDcols = c("x", "y")
-          ]
-        }
-
-        if (input$show_id == "Yes") {
-          void <- dt[
-            frame == the_frame(),
-            .drawTag(
-              to_display,
-              .BY$track_fixed,
-              .SD$x,
-              .SD$y,
-              input$tag_scale_x,
-              c(255, 255, 255),
-              c(0, 0, 0),
-              input$tag_width_x
-            ),
             by = .(track_fixed)
           ]
+
+          if (input$show_tracks == "Yes") {
+            void <- dt[,
+              .drawPolyLine(
+                to_display,
+                cbind(.SD$x, .SD$y),
+                FALSE,
+                .shades[, (.BY$track_fixed %% ncol(.shades)) + 1],
+                c(255, 255, 255),
+                input$track_width_x
+              ),
+              by = .(track_fixed),
+              .SDcols = c("x", "y")
+            ]
+          }
+
+          if (input$show_id == "Yes") {
+            void <- dt[
+              frame == the_frame(),
+              .drawTag(
+                to_display,
+                .BY$track_fixed,
+                .SD$x,
+                .SD$y,
+                input$tag_scale_x,
+                c(255, 255, 255),
+                c(0, 0, 0),
+                input$tag_width_x
+              ),
+              by = .(track_fixed)
+            ]
+          }
         }
       }
     } else {
@@ -412,7 +415,11 @@ shiny::observeEvent(input$export_video, {
 shiny::observeEvent(export_path(), {
   if (is_video_capture(the_video) & length(export_path()) > 0) {
     shinyjs::showElement("curtain")
-    shiny::showNotification("Exporting video.", id = "exporting", duration = NULL)
+    shiny::showNotification(
+      "Exporting video.",
+      id = "exporting",
+      duration = NULL
+    )
 
     n <- input$video_controls_x[3] - input$video_controls_x[1] + 1
     the_video$set(cv2$CAP_PROP_POS_FRAMES, input$video_controls_x[1] - 1)
@@ -454,57 +461,60 @@ shiny::observeEvent(export_path(), {
 
       if (data.table::is.data.table(the_tracks)) {
         current_tracks <- the_tracks[frame == current_frame]$track_fixed
-        dt <- the_tracks[
-          frame <= current_frame &
-            frame >= (current_frame - input$track_length_x) &
-            track_fixed %in% current_tracks
-        ]
 
-        void <- dt[
-          frame == current_frame,
-          .drawBox(
-            to_export,
-            .SD$x,
-            .SD$y,
-            .SD$width,
-            .SD$height,
-            .SD$angle,
-            .shades[, (.BY$track_fixed %% ncol(.shades)) + 1],
-            c(255, 255, 255),
-            input$track_width_x
-          ),
-          by = .(track_fixed)
-        ]
+        if (length(current_tracks) > 0) {
+          dt <- the_tracks[
+            frame <= current_frame &
+              frame >= (current_frame - input$track_length_x) &
+              track_fixed %in% current_tracks
+          ]
 
-        if (input$show_tracks == "Yes") {
-          void <- dt[,
-            .drawPolyLine(
+          void <- dt[
+            frame == current_frame,
+            .drawBox(
               to_export,
-              cbind(.SD$x, .SD$y),
-              FALSE,
+              .SD$x,
+              .SD$y,
+              .SD$width,
+              .SD$height,
+              .SD$angle,
               .shades[, (.BY$track_fixed %% ncol(.shades)) + 1],
               c(255, 255, 255),
               input$track_width_x
             ),
-            by = .(track_fixed),
-          ]
-        }
-
-        if (input$show_id == "Yes") {
-          void <- dt[
-            frame == current_frame,
-            .drawTag(
-              to_export,
-              .BY$track_fixed,
-              .SD$x,
-              .SD$y,
-              input$tag_scale_x,
-              c(255, 255, 255),
-              c(0, 0, 0),
-              input$track_width_x
-            ),
             by = .(track_fixed)
           ]
+
+          if (input$show_tracks == "Yes") {
+            void <- dt[,
+              .drawPolyLine(
+                to_export,
+                cbind(.SD$x, .SD$y),
+                FALSE,
+                .shades[, (.BY$track_fixed %% ncol(.shades)) + 1],
+                c(255, 255, 255),
+                input$track_width_x
+              ),
+              by = .(track_fixed),
+            ]
+          }
+
+          if (input$show_id == "Yes") {
+            void <- dt[
+              frame == current_frame,
+              .drawTag(
+                to_export,
+                .BY$track_fixed,
+                .SD$x,
+                .SD$y,
+                input$tag_scale_x,
+                c(255, 255, 255),
+                c(0, 0, 0),
+                input$track_width_x
+              ),
+              by = .(track_fixed)
+            ]
+          }
         }
       }
 
