@@ -36,79 +36,79 @@ shinyWidgets::verticalTabPanel(
 
   shiny::hr(),
 
-  shiny::p(shiny::strong("Keyboard navigation")),
+  # shiny::p(shiny::strong("Keyboard navigation")),
 
-  shiny::tags$table(
-    style = "width: 100%; text-align: center;",
-    shiny::tags$tr(
-      shiny::tags$td(),
-      shiny::tags$td("+ 1 sec.", style = "vertical-align: bottom;"),
-      shiny::tags$td()
-    ),
-    shiny::tags$tr(
-      shiny::tags$td("- 1 frame", style = "vertical-align: bottom;"),
-      shiny::tags$td(
-        shiny::actionButton(
-          "plus_sec",
-          shiny::icon(
-            "caret-up",
-            class = "fa-solid",
-            style = "font-size: 30px; color: #c8c8c8;"
-          ),
-          class = "fullWidth",
-          style = "padding: 0px;"
-        )
-      ),
-      shiny::tags$td("+ 1 frame", style = "vertical-align: bottom;")
-    ),
-    shiny::tags$tr(
-      shiny::tags$td(
-        shiny::actionButton(
-          "minus_frame",
-          shiny::icon(
-            "caret-left",
-            class = "fa-solid",
-            style = "font-size: 30px; color: #c8c8c8;"
-          ),
-          class = "fullWidth",
-          style = "padding: 0px;"
-        )
-      ),
-      shiny::tags$td(
-        shiny::actionButton(
-          "minus_sec",
-          shiny::div(
-            shiny::div(shiny::icon(
-              "caret-down",
-              class = "fa-solid",
-              style = "font-size: 30px; color: #c8c8c8;"
-            ))
-          ),
-          class = "fullWidth",
-          style = "padding: 0px;"
-        )
-      ),
-      shiny::tags$td(
-        shiny::actionButton(
-          "plus_frame",
-          shiny::icon(
-            "caret-right",
-            class = "fa-solid",
-            style = "font-size: 30px; color: #c8c8c8;"
-          ),
-          class = "fullWidth",
-          style = "padding: 0px;"
-        )
-      )
-    ),
-    shiny::tags$tr(
-      shiny::tags$td(),
-      shiny::tags$td("- 1 sec.", style = "vertical-align: top;"),
-      shiny::tags$td()
-    )
-  ),
+  # shiny::tags$table(
+  #   style = "width: 100%; text-align: center;",
+  #   shiny::tags$tr(
+  #     shiny::tags$td(),
+  #     shiny::tags$td("+ 1 sec.", style = "vertical-align: bottom;"),
+  #     shiny::tags$td()
+  #   ),
+  #   shiny::tags$tr(
+  #     shiny::tags$td("- 1 frame", style = "vertical-align: bottom;"),
+  #     shiny::tags$td(
+  #       shiny::actionButton(
+  #         "plus_sec",
+  #         shiny::icon(
+  #           "caret-up",
+  #           class = "fa-solid",
+  #           style = "font-size: 30px; color: #c8c8c8;"
+  #         ),
+  #         class = "fullWidth",
+  #         style = "padding: 0px;"
+  #       )
+  #     ),
+  #     shiny::tags$td("+ 1 frame", style = "vertical-align: bottom;")
+  #   ),
+  #   shiny::tags$tr(
+  #     shiny::tags$td(
+  #       shiny::actionButton(
+  #         "minus_frame",
+  #         shiny::icon(
+  #           "caret-left",
+  #           class = "fa-solid",
+  #           style = "font-size: 30px; color: #c8c8c8;"
+  #         ),
+  #         class = "fullWidth",
+  #         style = "padding: 0px;"
+  #       )
+  #     ),
+  #     shiny::tags$td(
+  #       shiny::actionButton(
+  #         "minus_sec",
+  #         shiny::div(
+  #           shiny::div(shiny::icon(
+  #             "caret-down",
+  #             class = "fa-solid",
+  #             style = "font-size: 30px; color: #c8c8c8;"
+  #           ))
+  #         ),
+  #         class = "fullWidth",
+  #         style = "padding: 0px;"
+  #       )
+  #     ),
+  #     shiny::tags$td(
+  #       shiny::actionButton(
+  #         "plus_frame",
+  #         shiny::icon(
+  #           "caret-right",
+  #           class = "fa-solid",
+  #           style = "font-size: 30px; color: #c8c8c8;"
+  #         ),
+  #         class = "fullWidth",
+  #         style = "padding: 0px;"
+  #       )
+  #     )
+  #   ),
+  #   shiny::tags$tr(
+  #     shiny::tags$td(),
+  #     shiny::tags$td("- 1 sec.", style = "vertical-align: top;"),
+  #     shiny::tags$td()
+  #   )
+  # ),
 
-  shiny::hr(),
+  # shiny::hr(),
 
   shiny::selectInput(
     "suspect",

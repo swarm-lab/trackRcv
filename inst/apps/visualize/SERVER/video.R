@@ -306,11 +306,12 @@ shiny::observeEvent(the_frame(), {
   }
 })
 
-shiny::observeEvent(input$leftKey, {
-  shinyjs::click("minus_frame", asis = FALSE)
-})
+# shiny::observeEvent(input$leftKey, {
+#   shinyjs::click("minus_frame", asis = FALSE)
+# })
 
-shiny::observeEvent(input$minus_frame, {
+# shiny::observeEvent(input$minus_frame, {
+shiny::observeEvent(input$leftKey, {
   if (is_video_capture(the_video)) {
     vals <- input$video_controls_x
 
@@ -325,11 +326,12 @@ shiny::observeEvent(input$minus_frame, {
   }
 })
 
-shiny::observeEvent(input$rightKey, {
-  shinyjs::click("plus_frame", asis = FALSE)
-})
+# shiny::observeEvent(input$rightKey, {
+#   shinyjs::click("plus_frame", asis = FALSE)
+# })
 
-shiny::observeEvent(input$plus_frame, {
+# shiny::observeEvent(input$plus_frame, {
+shiny::observeEvent(input$rightKey, {
   if (is_video_capture(the_video)) {
     vals <- input$video_controls_x
 
@@ -344,11 +346,12 @@ shiny::observeEvent(input$plus_frame, {
   }
 })
 
-shiny::observeEvent(input$downKey, {
-  shinyjs::click("minus_sec", asis = FALSE)
-})
+# shiny::observeEvent(input$downKey, {
+#   shinyjs::click("minus_sec", asis = FALSE)
+# })
 
-shiny::observeEvent(input$minus_sec, {
+# shiny::observeEvent(input$minus_sec, {
+shiny::observeEvent(input$downKey, {
   if (is_video_capture(the_video)) {
     vals <- input$video_controls_x
 
@@ -370,11 +373,12 @@ shiny::observeEvent(input$minus_sec, {
   }
 })
 
-shiny::observeEvent(input$upKey, {
-  shinyjs::click("plus_sec", asis = FALSE)
-})
+# shiny::observeEvent(input$upKey, {
+#   shinyjs::click("plus_sec", asis = FALSE)
+# })
 
-shiny::observeEvent(input$plus_sec, {
+# shiny::observeEvent(input$plus_sec, {
+shiny::observeEvent(input$upKey, {
   if (is_video_capture(the_video)) {
     vals <- input$video_controls_x
 
