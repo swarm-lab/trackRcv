@@ -381,8 +381,8 @@ output$track_stats <- shiny::renderTable(
       ]
       errors(rbind(
         data.table::data.table(
-          track = tmp[first > 1]$track_fixed,
-          frame = tmp[first > 1]$first,
+          track = tmp[first > input$video_controls_x[1]]$track_fixed,
+          frame = tmp[first > input$video_controls_x[1]]$first,
           type = "appears"
         ),
         data.table::data.table(
@@ -517,10 +517,6 @@ shiny::observeEvent(input$ok_reassign, {
       .(dup = .N > 1),
       by = frame
     ][, dup])
-
-    # ok <- !any(
-    #   the_tracks[frame == input$video_controls_x[2], track_fixed] == new_id
-    # )
 
     if (ok) {
       idx <- the_tracks[, track_fixed] == old_id
@@ -774,7 +770,9 @@ shiny::observeEvent(input$ok_merge, {
           l[["width"]] <- c(ell_px[3], width[!ix])
           l[["height"]] <- c(ell_px[4], height[!ix])
           l[["angle"]] <- c(ell_px[5], angle[!ix])
-          l[["n"]] <- c(sum(n), n[!ix])
+          if (!is.null(l[["n"]])) {
+            l[["n"]] <- c(sum(n), n[!ix])
+          }
 
           if (length(unit_real) > 0) {
             ell_real <- merge_ellipses(
@@ -816,7 +814,9 @@ shiny::observeEvent(input$ok_merge, {
           l[["width"]] <- width
           l[["height"]] <- height
           l[["angle"]] <- angle
-          l[["n"]] <- n
+          if (!is.null(l[["n"]])) {
+            l[["n"]] <- n
+          }
 
           if (length(unit_real) > 0) {
             l[[paste0("x", unit_real)]] <- get(paste0("x", unit_real))

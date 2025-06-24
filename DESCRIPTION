@@ -1,8 +1,11 @@
 Package: trackRcv
 Title: What the Package Does (One Line, Title Case)
 Version: 0.1.0
-Authors@R: 
-    person("Simon", "Garnier", , "garnier@njit.edu", role = c("aut", "cre"))
+Authors@R: c(
+    person("Simon", "Garnier", , "garnier@njit.edu", role = c("aut", "cre"),
+        comment = c(ORCID = "0000-0002-3886-3974")),
+    person("National Science Foundation, Award ID 2222418", role = c("fnd"),
+        comment = c()))
 Maintainer: Simon Garnier <garnier@njit.edu>
 Description: This package contains a series of Shiny-based apps to perform 
     multi-object tracking in videos using traditional computer vision techniques.
@@ -15,24 +18,24 @@ Suggests:
     knitr,
     quarto
 Imports: 
-    autothresholdr (>= 1.4.2),
+    autothresholdr,
     CEC (>= 0.11.2),
-    clue (>= 0.3.66),
-    cluster (>= 2.1.8.1),
-    data.table (>= 1.17.4),
+    clue,
+    cluster,
+    data.table,
     grDevices,
-    mvoutlier (>= 2.1.1),
-    pals (>= 1.10),
-    pracma (>= 2.4.4),
-    reticulate (>= 1.42.0),
-    Rfast (>= 2.1.5.1),
-    Rfast2 (>= 0.1.5.4),
-    shiny (>= 1.10.0),
-    shinyalert (>= 3.1.0),
-    shinyFiles (>= 0.9.3),
-    shinyjs (>= 2.1.0),
-    shinyWidgets (>= 0.9.0),
+    mvoutlier,
+    pals,
+    pracma,
+    reticulate,
+    Rfast,
+    Rfast2,
+    shiny,
+    shinyalert,
+    shinyFiles,
+    shinyjs,
+    shinyWidgets,
     stats,
-    stringr (>= 1.5.1),
+    stringr,
     utils
 VignetteBuilder: quarto
