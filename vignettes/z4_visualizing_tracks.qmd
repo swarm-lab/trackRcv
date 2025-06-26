@@ -42,7 +42,7 @@ Repeat the process with “Select tracks” button to load the tracking data. On
 
 ![](images/z4_1.jpg){style="border-radius: 5px; border-style: groove;" fig-align="center"}
 
-You can navigate through the video by sliding the green tab along the timeline displayed below the video. You can also use the arrows on your keyboard to navigate through the video, either frame by frame, or one second at a time.
+You can navigate through the video by sliding the green tab along the timeline displayed below the video. You can also use the arrow keys on your keyboard to navigate through the video: the left and right arrows allow you to navigate frame by frame; the up and down arrows allow you to navigate one second at a time.
 
 Below the navigation controls, you will find two tick boxes. On the left, the “Show IDs” tick box allows you to show or hide the IDs of the tracked objects within the colored boxes delineating them. On the right, the “Show tracks” tick box allows you to show or hide the trajectories that the tracked objects have taken during a fixed number of frames.
 
