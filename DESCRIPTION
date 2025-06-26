@@ -1,5 +1,5 @@
 Package: trackRcv
-Title: What the Package Does (One Line, Title Case)
+Title: Multi-Object Tracking
 Version: 0.1.0
 Authors@R: c(
     person("Simon", "Garnier", , "garnier@njit.edu", role = c("aut", "cre"),
