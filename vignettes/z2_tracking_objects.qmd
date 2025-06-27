@@ -181,8 +181,8 @@ Once the app is done processing the video, the resulting CSV file will contain b
 
 If you have set a real-world scale and origin in the “Tracking module”, the following extra columns will be saved:
 
--   “x\_\[unit\]” is the x coordinate of the object location in real-world \[unit\]. The origin is set to the real-worl equivalent to that you have defined in the “Scale module”.
--   “y\_\[unit\]” is the y coordinate of the object location in real-world \[unit\]. The origin is set to the real-worl equivalent to that you have defined in the “Tracking module”.
+-   “x\_\[unit\]” is the x coordinate of the object location in real-world \[unit\]. The origin is set to the real-world equivalent to that you have defined in the “Scale module”.
+-   “y\_\[unit\]” is the y coordinate of the object location in real-world \[unit\]. The origin is set to the real-world equivalent to that you have defined in the “Tracking module”.
 -   “width\_\[unit\]” is the width in real-world \[unit\] of the object.
 -   “height\_\[unit\]” is the height in real-world \[unit\] of the object.
 
