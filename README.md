@@ -10,36 +10,46 @@
 
 ## Description 
 
-trackRcv is an object tracker for R based on Python [OpenCV](https://opencv.org/). 
-It provides an easy-to-use (or so I think) graphical interface allowing users 
-to perform multi-object video tracking in a range of conditions while 
-maintaining individual identities.
+trackRcv is an object tracker for R based on Python
+[OpenCV](https://opencv.org/). It provides easy-to-use (or so I think) apps for
+performing multi-object video tracking in a range of conditions while
+maintaining individual identities. trackRcv also provides convenience
+apps to correct common errors that occurs during tracking, and to export
+publication-ready videos showing the moving objects with their track overlaid on
+top of them.
 
-trackRcv uses background subtraction to segment objects in a video. A background 
-image can be provided by the user or can be computed by trackRcv automatically 
-in most situations. Overlapping objects are then separated using cross-entropy 
-clustering, an automated classification method that provides good computing 
-performance while being able to handle various types of object shapes (see 
-[the CEC package for R](https://swarm-lab.github.io/cec/) for more information 
-on cross-entropy clustering). Most of the tracking parameters can be 
-automatically estimated by trackRcv or can be set manually by the user. 
+trackRcv uses traditional computer vision techniques to segment and track
+objects in a video. Object separation is done using cross-entropy clustering, an
+automated classification method that provides good computing performance while
+being able to handle various types of object shapes (see
+[the CEC package for R](https://swarm-lab.github.io/cec/) for more information
+on cross-entropy clustering). For more advanced segmentation and tracking based
+on deep learning approaches, you can try my
+[YOLO11](https://docs.ultralytics.com/models/yolo11/)-based
+[trackRai](https://swarm-lab.github.io/trackRai) package instead (a powerful
+CUDA-enabled NVIDIA graphics is recommended in that case).
 
-trackRcv also allows users to exclude parts of the image by using masks that can 
-be easily created and customized directly within the app. 
-
-Finally, trackRcv provides several convenience apps to correct common errors 
-that occurs during video recording, to manually inspect and fix tracking errors, 
-and to export publication-ready videos showing the moving objects with their 
-track overlaid on top of them. 
 
 ---
 
-## Quick start guides
+## Installation
 
-+ [1. Installing trackRcv](https://swarm-lab.github.io/trackRcv/articles/z1_installing_trackRcv.html)
-+ [2. Tracking objects](https://swarm-lab.github.io/trackRcv/articles/z2_tracking_objects.html)
-+ [3. Fixing tracks](https://swarm-lab.github.io/trackRcv/articles/z3_fixing_tracks.html)
-+ [4. Visualizing tracks](https://swarm-lab.github.io/trackRcv/articles/z4_visualizing_tracks.html)
+You can install the development version of trackRcv from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("swarm-lab/trackRcv")
+```
+
+---
+
+## User guides
+
+- [1. Installing trackRcv](https://swarm-lab.github.io/trackRcv/articles/z1_installing_trackRcv.html)
+- [2. Tracking objects](https://swarm-lab.github.io/trackRcv/articles/z2_tracking_objects.html)
+- [3. Fixing tracks](https://swarm-lab.github.io/trackRcv/articles/z3_fixing_tracks.html)
+- [4. Visualizing tracks](https://swarm-lab.github.io/trackRcv/articles/z4_visualizing_tracks.html)
 
 ---
 
