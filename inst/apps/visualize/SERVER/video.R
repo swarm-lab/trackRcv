@@ -42,7 +42,11 @@ shiny::observeEvent(input$main, {
   refresh_display(refresh_display() + 1)
 })
 
-shiny::observeEvent(input$track_width_x, {
+shiny::observeEvent(input$line_width_x, {
+  refresh_display(refresh_display() + 1)
+})
+
+shiny::observeEvent(input$outline_width_x, {
   refresh_display(refresh_display() + 1)
 })
 
@@ -54,7 +58,15 @@ shiny::observeEvent(input$tag_scale_x, {
   refresh_display(refresh_display() + 1)
 })
 
-shiny::observeEvent(input$tag_width_x, {
+shiny::observeEvent(input$show_id, {
+  refresh_display(refresh_display() + 1)
+})
+
+shiny::observeEvent(input$show_boxes, {
+  refresh_display(refresh_display() + 1)
+})
+
+shiny::observeEvent(input$show_tracks, {
   refresh_display(refresh_display() + 1)
 })
 
@@ -74,23 +86,26 @@ shiny::observeEvent(refresh_display(), {
               track_fixed %in% current_tracks
           ]
 
-          void <- dt[
-            frame == the_frame(),
-            .drawBox(
-              to_display,
-              .SD$x,
-              .SD$y,
-              .SD$width,
-              .SD$height,
-              .SD$angle,
-              .shades[, (.BY$track_fixed %% ncol(.shades)) + 1],
-              c(255, 255, 255),
-              input$track_width_x
-            ),
-            by = .(track_fixed)
-          ]
+          if (input$show_boxes) {
+            void <- dt[
+              frame == the_frame(),
+              .drawBox(
+                to_display,
+                .SD$x,
+                .SD$y,
+                .SD$width,
+                .SD$height,
+                .SD$angle,
+                .shades[, (.BY$track_fixed %% ncol(.shades)) + 1],
+                c(255, 255, 255),
+                input$line_width_x,
+                input$outline_width_x
+              ),
+              by = .(track_fixed)
+            ]
+          }
 
-          if (input$show_tracks == "Yes") {
+          if (input$show_tracks) {
             void <- dt[,
               .drawPolyLine(
                 to_display,
@@ -98,14 +113,15 @@ shiny::observeEvent(refresh_display(), {
                 FALSE,
                 .shades[, (.BY$track_fixed %% ncol(.shades)) + 1],
                 c(255, 255, 255),
-                input$track_width_x
+                input$line_width_x,
+                input$outline_width_x
               ),
               by = .(track_fixed),
               .SDcols = c("x", "y")
             ]
           }
 
-          if (input$show_id == "Yes") {
+          if (input$show_id) {
             void <- dt[
               frame == the_frame(),
               .drawTag(
@@ -116,7 +132,8 @@ shiny::observeEvent(refresh_display(), {
                 input$tag_scale_x,
                 c(255, 255, 255),
                 c(0, 0, 0),
-                input$tag_width_x
+                input$tag_scale_x * 2,
+                input$outline_width_x
               ),
               by = .(track_fixed)
             ]
@@ -306,11 +323,6 @@ shiny::observeEvent(the_frame(), {
   }
 })
 
-# shiny::observeEvent(input$leftKey, {
-#   shinyjs::click("minus_frame", asis = FALSE)
-# })
-
-# shiny::observeEvent(input$minus_frame, {
 shiny::observeEvent(input$leftKey, {
   if (is_video_capture(the_video)) {
     vals <- input$video_controls_x
@@ -326,11 +338,6 @@ shiny::observeEvent(input$leftKey, {
   }
 })
 
-# shiny::observeEvent(input$rightKey, {
-#   shinyjs::click("plus_frame", asis = FALSE)
-# })
-
-# shiny::observeEvent(input$plus_frame, {
 shiny::observeEvent(input$rightKey, {
   if (is_video_capture(the_video)) {
     vals <- input$video_controls_x
@@ -346,11 +353,6 @@ shiny::observeEvent(input$rightKey, {
   }
 })
 
-# shiny::observeEvent(input$downKey, {
-#   shinyjs::click("minus_sec", asis = FALSE)
-# })
-
-# shiny::observeEvent(input$minus_sec, {
 shiny::observeEvent(input$downKey, {
   if (is_video_capture(the_video)) {
     vals <- input$video_controls_x
@@ -373,11 +375,6 @@ shiny::observeEvent(input$downKey, {
   }
 })
 
-# shiny::observeEvent(input$upKey, {
-#   shinyjs::click("plus_sec", asis = FALSE)
-# })
-
-# shiny::observeEvent(input$plus_sec, {
 shiny::observeEvent(input$upKey, {
   if (is_video_capture(the_video)) {
     vals <- input$video_controls_x
@@ -484,7 +481,8 @@ shiny::observeEvent(export_path(), {
               .SD$angle,
               .shades[, (.BY$track_fixed %% ncol(.shades)) + 1],
               c(255, 255, 255),
-              input$track_width_x
+              input$line_width_x,
+              input$outline_width_x
             ),
             by = .(track_fixed)
           ]
@@ -497,7 +495,8 @@ shiny::observeEvent(export_path(), {
                 FALSE,
                 .shades[, (.BY$track_fixed %% ncol(.shades)) + 1],
                 c(255, 255, 255),
-                input$track_width_x
+                input$line_width_x,
+                input$outline_width_x
               ),
               by = .(track_fixed),
             ]
@@ -514,7 +513,8 @@ shiny::observeEvent(export_path(), {
                 input$tag_scale_x,
                 c(255, 255, 255),
                 c(0, 0, 0),
-                input$track_width_x
+                input$tag_scale_x * 2,
+                input$outline_width_x
               ),
               by = .(track_fixed)
             ]

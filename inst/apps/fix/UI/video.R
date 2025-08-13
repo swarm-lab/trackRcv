@@ -186,8 +186,8 @@ shinyWidgets::verticalTabPanel(
       shiny::tags$td(),
       shiny::tags$td(
         shiny::numericInput(
-          "tag_width_x",
-          "Tag line width:",
+          "line_width_x",
+          "Line width:",
           4,
           0,
           NA,
@@ -198,6 +198,40 @@ shinyWidgets::verticalTabPanel(
       )
     ),
     class = "settingsTable"
+  ),
+
+  shiny::tags$table(
+    shiny::tags$tr(
+      shiny::tags$td(
+        shinyWidgets::prettyToggle(
+          inputId = "show_id",
+          label_on = "Show IDs",
+          label_off = "Show IDs",
+          value = TRUE,
+          shape = "curve",
+          outline = TRUE,
+          bigger = TRUE,
+          width = "100%"
+        ),
+        style = "width: 49%; text-align:center;"
+      ),
+      shiny::tags$td(),
+      shiny::tags$td(
+        shinyWidgets::prettyToggle(
+          inputId = "show_boxes",
+          label_on = "Show boxes",
+          label_off = "Show boxes",
+          value = TRUE,
+          shape = "curve",
+          outline = TRUE,
+          bigger = TRUE,
+          width = "100%"
+        ),
+        style = "width: 49%; text-align:center;"
+      )
+    ),
+
+    class = "stateTable"
   ),
 
   shiny::hr()
