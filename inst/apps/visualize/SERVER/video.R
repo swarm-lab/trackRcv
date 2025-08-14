@@ -59,14 +59,26 @@ shiny::observeEvent(input$tag_scale_x, {
 })
 
 shiny::observeEvent(input$show_id, {
+  if (input$show_id & input$show_class) {
+    shinyWidgets::updatePrettyToggle(session, "show_class", value = FALSE)
+  }
+
   refresh_display(refresh_display() + 1)
 })
 
-shiny::observeEvent(input$show_boxes, {
+shiny::observeEvent(input$show_class, {
+  if (input$show_id & input$show_class) {
+    shinyWidgets::updatePrettyToggle(session, "show_id", value = FALSE)
+  }
+
   refresh_display(refresh_display() + 1)
 })
 
-shiny::observeEvent(input$show_tracks, {
+shiny::observeEvent(input$show_box, {
+  refresh_display(refresh_display() + 1)
+})
+
+shiny::observeEvent(input$show_track, {
   refresh_display(refresh_display() + 1)
 })
 
@@ -86,7 +98,7 @@ shiny::observeEvent(refresh_display(), {
               track_fixed %in% current_tracks
           ]
 
-          if (input$show_boxes) {
+          if (input$show_box) {
             void <- dt[
               frame == the_frame(),
               .drawBox(
@@ -96,28 +108,35 @@ shiny::observeEvent(refresh_display(), {
                 .SD$width,
                 .SD$height,
                 .SD$angle,
-                .shades[, (.BY$track_fixed %% ncol(.shades)) + 1],
-                c(255, 255, 255),
-                input$line_width_x,
-                input$outline_width_x
+                color = if (tolower(.SD$class) %in% colors()) {
+                  col2rgb(tolower(.SD$class))[3:1, ]
+                } else {
+                  .shades[3:1, (.BY$track_fixed %% ncol(.shades)) + 1]
+                },
+                contrast = c(255, 255, 255),
+                thickness = input$line_width_x,
+                outline = input$outline_width_x
               ),
               by = .(track_fixed)
             ]
           }
 
-          if (input$show_tracks) {
+          if (input$show_track) {
             void <- dt[,
               .drawPolyLine(
                 to_display,
                 cbind(.SD$x, .SD$y),
-                FALSE,
-                .shades[, (.BY$track_fixed %% ncol(.shades)) + 1],
-                c(255, 255, 255),
-                input$line_width_x,
-                input$outline_width_x
+                closed = FALSE,
+                color = if (tolower(.SD$class[.N]) %in% colors()) {
+                  col2rgb(tolower(.SD$class[.N]))[3:1, ]
+                } else {
+                  .shades[3:1, (.BY$track_fixed %% ncol(.shades)) + 1]
+                },
+                contrast = c(255, 255, 255),
+                thickness = input$line_width_x,
+                outline = input$outline_width_x
               ),
-              by = .(track_fixed),
-              .SDcols = c("x", "y")
+              by = .(track_fixed)
             ]
           }
 
@@ -133,7 +152,25 @@ shiny::observeEvent(refresh_display(), {
                 c(255, 255, 255),
                 c(0, 0, 0),
                 input$tag_scale_x * 2,
-                input$outline_width_x
+                input$tag_scale_x * 2 + 1
+              ),
+              by = .(track_fixed)
+            ]
+          }
+
+          if (input$show_class) {
+            void <- dt[
+              frame == the_frame(),
+              .drawTag(
+                to_display,
+                .SD$class,
+                .SD$x,
+                .SD$y,
+                input$tag_scale_x,
+                c(255, 255, 255),
+                c(0, 0, 0),
+                input$tag_scale_x * 2,
+                input$tag_scale_x * 2 + 1
               ),
               by = .(track_fixed)
             ]
@@ -470,39 +507,49 @@ shiny::observeEvent(export_path(), {
               track_fixed %in% current_tracks
           ]
 
-          void <- dt[
-            frame == current_frame,
-            .drawBox(
-              to_export,
-              .SD$x,
-              .SD$y,
-              .SD$width,
-              .SD$height,
-              .SD$angle,
-              .shades[, (.BY$track_fixed %% ncol(.shades)) + 1],
-              c(255, 255, 255),
-              input$line_width_x,
-              input$outline_width_x
-            ),
-            by = .(track_fixed)
-          ]
+          if (input$show_box) {
+            void <- dt[
+              frame == current_frame,
+              .drawBox(
+                to_export,
+                .SD$x,
+                .SD$y,
+                .SD$width,
+                .SD$height,
+                .SD$angle,
+                color = if (tolower(.SD$class) %in% colors()) {
+                  col2rgb(tolower(.SD$class))[3:1, ]
+                } else {
+                  .shades[3:1, (.BY$track_fixed %% ncol(.shades)) + 1]
+                },
+                contrast = c(255, 255, 255),
+                thickness = input$line_width_x,
+                outline = input$outline_width_x
+              ),
+              by = .(track_fixed)
+            ]
+          }
 
-          if (input$show_tracks == "Yes") {
+          if (input$show_track) {
             void <- dt[,
               .drawPolyLine(
                 to_export,
                 cbind(.SD$x, .SD$y),
-                FALSE,
-                .shades[, (.BY$track_fixed %% ncol(.shades)) + 1],
-                c(255, 255, 255),
-                input$line_width_x,
-                input$outline_width_x
+                closed = FALSE,
+                color = if (tolower(.SD$class[.N]) %in% colors()) {
+                  col2rgb(tolower(.SD$class[.N]))[3:1, ]
+                } else {
+                  .shades[3:1, (.BY$track_fixed %% ncol(.shades)) + 1]
+                },
+                contrast = c(255, 255, 255),
+                thickness = input$line_width_x,
+                outline = input$outline_width_x
               ),
-              by = .(track_fixed),
+              by = .(track_fixed)
             ]
           }
 
-          if (input$show_id == "Yes") {
+          if (input$show_id) {
             void <- dt[
               frame == current_frame,
               .drawTag(
@@ -514,7 +561,25 @@ shiny::observeEvent(export_path(), {
                 c(255, 255, 255),
                 c(0, 0, 0),
                 input$tag_scale_x * 2,
-                input$outline_width_x
+                input$tag_scale_x * 2 + 1
+              ),
+              by = .(track_fixed)
+            ]
+          }
+
+          if (input$show_class) {
+            void <- dt[
+              frame == current_frame,
+              .drawTag(
+                to_export,
+                .SD$class,
+                .SD$x,
+                .SD$y,
+                input$tag_scale_x,
+                c(255, 255, 255),
+                c(0, 0, 0),
+                input$tag_scale_x * 2,
+                input$tag_scale_x * 2 + 1
               ),
               by = .(track_fixed)
             ]

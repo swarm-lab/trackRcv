@@ -94,12 +94,11 @@ shinyWidgets::verticalTabPanel(
     class = "settingsTable"
   ),
 
+  shiny::hr(),
+
+  shiny::tags$p(shiny::tags$b("Show:")),
   shiny::tags$table(
     shiny::tags$tr(
-      shiny::tags$td(
-        shiny::tags$p(shiny::tags$b("Show:")),
-        style = "width: 24%; vertical-align: top;"
-      ),
       shiny::tags$td(
         shinyWidgets::prettyToggle(
           inputId = "show_id",
@@ -113,10 +112,23 @@ shinyWidgets::verticalTabPanel(
         ),
         style = "width: 24%;"
       ),
+      shiny::tags$td(
+        shinyWidgets::prettyToggle(
+          inputId = "show_class",
+          label_on = "Classes",
+          label_off = "Classes",
+          value = FALSE,
+          shape = "curve",
+          outline = TRUE,
+          bigger = TRUE,
+          width = "100%"
+        ),
+        style = "width: 24%;"
+      ),
       shiny::tags$td(),
       shiny::tags$td(
         shinyWidgets::prettyToggle(
-          inputId = "show_boxes",
+          inputId = "show_box",
           label_on = "Boxes",
           label_off = "Boxes",
           value = TRUE,
@@ -130,7 +142,7 @@ shinyWidgets::verticalTabPanel(
       shiny::tags$td(),
       shiny::tags$td(
         shinyWidgets::prettyToggle(
-          inputId = "show_tracks",
+          inputId = "show_track",
           label_on = "Tracks",
           label_off = "Tracks",
           value = TRUE,

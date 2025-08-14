@@ -81,10 +81,14 @@ shiny::observeEvent(refresh_display(), {
                 .SD$width,
                 .SD$height,
                 .SD$angle,
-                .shades[, (.BY$track_fixed %% ncol(.shades)) + 1],
-                c(255, 255, 255),
-                input$line_width_x, # sc * 1.5
-                max(1, input$line_width_x)
+                color = if (tolower(.SD$class) %in% colors()) {
+                  col2rgb(tolower(.SD$class))[3:1, ]
+                } else {
+                  .shades[3:1, (.BY$track_fixed %% ncol(.shades)) + 1]
+                },
+                contrast = c(255, 255, 255),
+                thickness = input$line_width_x,
+                outline = max(1, input$line_width_x)
               ),
               by = .(track_fixed)
             ]
