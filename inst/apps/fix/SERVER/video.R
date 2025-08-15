@@ -49,7 +49,15 @@ shiny::observeEvent(input$tag_scale_x, {
   refresh_display(refresh_display() + 1)
 })
 
-shiny::observeEvent(input$tag_width_x, {
+shiny::observeEvent(input$line_width_x, {
+  refresh_display(refresh_display() + 1)
+})
+
+shiny::observeEvent(input$show_id, {
+  refresh_display(refresh_display() + 1)
+})
+
+shiny::observeEvent(input$show_boxes, {
   refresh_display(refresh_display() + 1)
 })
 
@@ -63,36 +71,46 @@ shiny::observeEvent(refresh_display(), {
         current_tracks <- the_tracks[frame == the_frame()]$track_fixed
 
         if (length(current_tracks) > 0) {
-          void <- the_tracks[
-            frame == the_frame() & ignore != TRUE,
-            .drawBox(
-              to_display,
-              .SD$x,
-              .SD$y,
-              .SD$width,
-              .SD$height,
-              .SD$angle,
-              .shades[, (.BY$track_fixed %% ncol(.shades)) + 1],
-              c(255, 255, 255),
-              sc * 1.5
-            ),
-            by = .(track_fixed)
-          ]
+          if (input$show_boxes & input$line_width_x > 0) {
+            void <- the_tracks[
+              frame == the_frame() & ignore != TRUE,
+              .drawBox(
+                to_display,
+                .SD$x,
+                .SD$y,
+                .SD$width,
+                .SD$height,
+                .SD$angle,
+                color = if (tolower(.SD$class) %in% colors()) {
+                  col2rgb(tolower(.SD$class))[3:1, ]
+                } else {
+                  .shades[3:1, (.BY$track_fixed %% ncol(.shades)) + 1]
+                },
+                contrast = c(255, 255, 255),
+                thickness = input$line_width_x,
+                outline = max(1, input$line_width_x)
+              ),
+              by = .(track_fixed)
+            ]
+          }
 
-          void <- the_tracks[
-            frame == the_frame() & ignore != TRUE,
-            .drawTag(
-              to_display,
-              .BY$track_fixed,
-              .SD$x,
-              .SD$y,
-              input$tag_scale_x,
-              c(255, 255, 255),
-              c(0, 0, 0),
-              input$tag_width_x
-            ),
-            by = .(track_fixed)
-          ]
+          if (input$show_id & input$line_width_x > 0) {
+            void <- the_tracks[
+              frame == the_frame() & ignore != TRUE,
+              .drawTag(
+                to_display,
+                .BY$track_fixed,
+                .SD$x,
+                .SD$y,
+                input$tag_scale_x,
+                c(255, 255, 255),
+                c(0, 0, 0),
+                input$line_width_x,
+                max(1, input$line_width_x)
+              ),
+              by = .(track_fixed)
+            ]
+          }
         }
       }
     } else {

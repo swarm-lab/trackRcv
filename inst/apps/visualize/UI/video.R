@@ -36,120 +36,12 @@ shinyWidgets::verticalTabPanel(
 
   shiny::hr(),
 
-  # shiny::p(shiny::strong("Keyboard navigation")),
-
-  # shiny::tags$table(
-  #   style = "width: 100%; text-align: center;",
-  #   shiny::tags$tr(
-  #     shiny::tags$td(),
-  #     shiny::tags$td("+ 1 sec.", style = "vertical-align: bottom;"),
-  #     shiny::tags$td()
-  #   ),
-  #   shiny::tags$tr(
-  #     shiny::tags$td("- 1 frame", style = "vertical-align: bottom;"),
-  #     shiny::tags$td(
-  #       shiny::actionButton(
-  #         "plus_sec",
-  #         shiny::icon(
-  #           "caret-up",
-  #           class = "fa-solid",
-  #           style = "font-size: 30px; color: #c8c8c8;"
-  #         ),
-  #         class = "fullWidth",
-  #         style = "padding: 0px;"
-  #       )
-  #     ),
-  #     shiny::tags$td("+ 1 frame", style = "vertical-align: bottom;")
-  #   ),
-  #   shiny::tags$tr(
-  #     shiny::tags$td(
-  #       shiny::actionButton(
-  #         "minus_frame",
-  #         shiny::icon(
-  #           "caret-left",
-  #           class = "fa-solid",
-  #           style = "font-size: 30px; color: #c8c8c8;"
-  #         ),
-  #         class = "fullWidth",
-  #         style = "padding: 0px;"
-  #       )
-  #     ),
-  #     shiny::tags$td(
-  #       shiny::actionButton(
-  #         "minus_sec",
-  #         shiny::div(
-  #           shiny::div(shiny::icon(
-  #             "caret-down",
-  #             class = "fa-solid",
-  #             style = "font-size: 30px; color: #c8c8c8;"
-  #           ))
-  #         ),
-  #         class = "fullWidth",
-  #         style = "padding: 0px;"
-  #       )
-  #     ),
-  #     shiny::tags$td(
-  #       shiny::actionButton(
-  #         "plus_frame",
-  #         shiny::icon(
-  #           "caret-right",
-  #           class = "fa-solid",
-  #           style = "font-size: 30px; color: #c8c8c8;"
-  #         ),
-  #         class = "fullWidth",
-  #         style = "padding: 0px;"
-  #       )
-  #     )
-  #   ),
-  #   shiny::tags$tr(
-  #     shiny::tags$td(),
-  #     shiny::tags$td("- 1 sec.", style = "vertical-align: top;"),
-  #     shiny::tags$td()
-  #   )
-  # ),
-
-  # shiny::hr(),
-
-  shiny::tags$table(
-    shiny::tags$tr(
-      shiny::tags$td(
-        shinyWidgets::awesomeRadio(
-          inputId = "show_id",
-          label = "Show IDs",
-          choices = c("Yes", "No"),
-          selected = "Yes",
-          inline = TRUE,
-          checkbox = TRUE,
-          width = "100%"
-        ),
-        style = "width: 49%; text-align:center;"
-      ),
-      shiny::tags$td(),
-      shiny::tags$td(
-        shinyWidgets::awesomeRadio(
-          inputId = "show_tracks",
-          label = "Show tracks",
-          choices = c("Yes", "No"),
-          selected = "Yes",
-          inline = TRUE,
-          checkbox = TRUE,
-          width = "100%"
-        ),
-        style = "width: 49%; text-align:center;"
-      )
-    ),
-
-    class = "stateTable"
-  ),
-
-  shiny::hr(),
-
   shiny::tags$table(
     shiny::tags$tr(
       shiny::tags$td(
         shiny::numericInput(
-          "track_width_x",
-          "Track width (pixels):",
+          "line_width_x",
+          "Line width (pixels):",
           4,
           0,
           NA,
@@ -159,6 +51,20 @@ shinyWidgets::verticalTabPanel(
         style = "width: 49%;"
       ),
       shiny::tags$td(),
+      shiny::tags$td(
+        shiny::numericInput(
+          "outline_width_x",
+          "Outline width (pixels):",
+          2,
+          0,
+          NA,
+          1,
+          "100%"
+        ),
+        style = "width: 49%;"
+      )
+    ),
+    shiny::tags$tr(
       shiny::tags$td(
         shiny::numericInput(
           "track_length_x",
@@ -170,36 +76,87 @@ shinyWidgets::verticalTabPanel(
           "100%"
         ),
         style = "width: 49%;"
-      )
-    ),
-    shiny::tags$tr(
+      ),
+      shiny::tags$td(),
       shiny::tags$td(
         shiny::numericInput(
           "tag_scale_x",
           "Tag scale:",
-          1.5,
+          1.0,
           0,
           NA,
           .1,
           "100%"
         ),
         style = "width: 49%;"
-      ),
-      shiny::tags$td(),
-      shiny::tags$td(
-        shiny::numericInput(
-          "tag_width_x",
-          "Tag line width:",
-          4,
-          0,
-          NA,
-          1,
-          "100%"
-        ),
-        style = "width: 49%;"
       )
     ),
     class = "settingsTable"
+  ),
+
+  shiny::hr(),
+
+  shiny::tags$p(shiny::tags$b("Show:")),
+  shiny::tags$table(
+    shiny::tags$tr(
+      shiny::tags$td(
+        shinyWidgets::prettyToggle(
+          inputId = "show_id",
+          label_on = "IDs",
+          label_off = "IDs",
+          value = TRUE,
+          shape = "curve",
+          outline = TRUE,
+          bigger = TRUE,
+          width = "100%"
+        ),
+        style = "width: 24%;"
+      ),
+      shiny::tags$td(
+        shinyWidgets::prettyToggle(
+          inputId = "show_class",
+          label_on = "Classes",
+          label_off = "Classes",
+          value = FALSE,
+          shape = "curve",
+          outline = TRUE,
+          bigger = TRUE,
+          width = "100%"
+        ),
+        style = "width: 24%;"
+      ),
+      shiny::tags$td(),
+      shiny::tags$td(
+        shinyWidgets::prettyToggle(
+          inputId = "show_box",
+          label_on = "Boxes",
+          label_off = "Boxes",
+          value = TRUE,
+          shape = "curve",
+          outline = TRUE,
+          bigger = TRUE,
+          width = "100%"
+        ),
+        style = "width: 24%; "
+      ),
+      shiny::tags$td(),
+      shiny::tags$td(
+        shinyWidgets::prettyToggle(
+          inputId = "show_track",
+          label_on = "Tracks",
+          label_off = "Tracks",
+          value = TRUE,
+          shape = "curve",
+          outline = TRUE,
+          bigger = TRUE,
+          width = "100%"
+        ),
+        style = "width: 24%; "
+      )
+    ),
+
+    class = "stateTable",
+    style = "margin-top: 10px; margin-bottom: -10px"
   ),
 
   shiny::hr(),
