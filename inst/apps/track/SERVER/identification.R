@@ -158,7 +158,8 @@ shiny::observeEvent(refresh_display(), {
           .SD$angle,
           .shades[, (.BY$id %% ncol(.shades)) + 1],
           c(255, 255, 255),
-          sc * 1.5
+          max(1, round(sc)),
+          max(1, round(sc) + 1)
         ),
         by = .(id)
       ]
@@ -173,7 +174,8 @@ shiny::observeEvent(refresh_display(), {
       FALSE,
       c(255L, 255L, 255),
       c(0, 0, 0),
-      sc
+      max(1, round(sc)),
+      max(1, round(sc) + 1)
     )
 
     .drawText(
@@ -184,7 +186,8 @@ shiny::observeEvent(refresh_display(), {
       as.integer(max(0.5, round(0.5 * sc))),
       c(255L, 255L, 255L),
       c(0, 0, 0),
-      as.integer(max(1, round(sc)))
+      max(1, round(sc)),
+      max(1, round(sc) + 1)
     )
 
     print_display(print_display() + 1)

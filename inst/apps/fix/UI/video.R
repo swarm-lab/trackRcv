@@ -101,7 +101,7 @@ shinyWidgets::verticalTabPanel(
         shiny::numericInput(
           "tag_scale_x",
           "Tag scale:",
-          1.5,
+          1,
           0,
           NA,
           .1,

@@ -29,7 +29,8 @@ shiny::observeEvent(refresh_display(), {
         FALSE,
         c(255, 255, 255),
         c(0, 0, 0),
-        sc * 1.5
+        max(1, round(sc)),
+        max(1, round(sc) + 1)
       )
 
       .drawCircle(
@@ -39,7 +40,7 @@ shiny::observeEvent(refresh_display(), {
         r,
         c(255, 255, 255),
         c(0, 0, 0),
-        sc * 1.5
+        max(1, round(sc))
       )
     }
 
@@ -51,7 +52,8 @@ shiny::observeEvent(refresh_display(), {
           FALSE,
           c(255, 255, 255),
           c(0, 0, 0),
-          sc * 1.5
+          max(1, round(sc)),
+          max(1, round(sc) + 1)
         )
       }
 
@@ -63,7 +65,7 @@ shiny::observeEvent(refresh_display(), {
           r,
           c(255, 255, 255),
           c(0, 0, 0),
-          sc * 1.5
+          max(1, round(sc))
         )
       }
     }

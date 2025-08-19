@@ -229,9 +229,10 @@ shiny::observeEvent(loop_debounced(), {
         memory <<- rbind(memory, blobs)
 
         to_write <- blobs[, -"id"]
+        to_write[, class := "object"]
         data.table::setcolorder(
           to_write,
-          c("frame", "track", "x", "y", "width", "height", "angle", "n")
+          c("frame", "track", "class", "x", "y", "width", "height", "angle", "n")
         )
 
         if (!is.null(scale_px()) & !is.null(scale_real())) {
@@ -270,7 +271,8 @@ shiny::observeEvent(loop_debounced(), {
               .SD$angle,
               .shades[, (.BY$track %% ncol(.shades)) + 1],
               c(255, 255, 255),
-              sc * 1.5
+              max(1, round(sc)),
+              max(1, round(sc) + 1)
             ),
             by = .(track)
           ]
@@ -282,7 +284,8 @@ shiny::observeEvent(loop_debounced(), {
               FALSE,
               .shades[, (.BY$track %% ncol(.shades)) + 1],
               c(255, 255, 255),
-              sc * 1.5
+              max(1, round(sc)),
+              max(1, round(sc) + 1)
             ),
             by = .(track)
           ]

@@ -560,8 +560,8 @@ shiny::observeEvent(export_path(), {
                 input$tag_scale_x,
                 c(255, 255, 255),
                 c(0, 0, 0),
-                input$tag_scale_x * 2,
-                input$tag_scale_x * 2 + 1
+                input$tag_scale_x * 1.5,
+                input$tag_scale_x * 1.5 + 1
               ),
               by = .(track_fixed)
             ]

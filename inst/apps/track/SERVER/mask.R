@@ -99,7 +99,8 @@ shiny::observeEvent(refresh_display(), {
             font_scale,
             c(255, 255, 255),
             c(0, 0, 0),
-            font_thickness
+            font_thickness,
+            font_thickness + 1
           )
         }
       }
@@ -112,7 +113,8 @@ shiny::observeEvent(refresh_display(), {
             TRUE,
             c(255, 255, 255),
             c(255, 255, 255),
-            sc
+            max(1, round(sc)),
+            0
           )
         }
       }
@@ -126,7 +128,7 @@ shiny::observeEvent(refresh_display(), {
             r,
             c(0, 0, 255),
             c(255, 255, 255),
-            sc
+            max(1, round(sc))
           )
         }
       }
