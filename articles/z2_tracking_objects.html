@@ -183,7 +183,7 @@
 <ul>
 <li>“Look back” controls how many past frames the tracking algorithm should take into account to associate each detected object to a track. This is a useful parameter to take into account if, for instance, the objects tend to disappear for a few frames from time to time.</li>
 <li>“Maximum distance” controls the maximum distance in pixels that an object can move between two frames to be still considered as belonging to the same track.</li>
-<li>“Preview tracks during tracking” controls whether a preview of the tracking results should be displayed during the tracking process. The preview shows 1 frame per second of the video with the trajectories overlaid on top. This will slow down a bit the tracking process, but this can be used to check that the tracking is working well when deciding on the right set of tracking parameters.</li>
+<li>“Preview tracks (slower)” controls whether a preview of the tracking results should be displayed during the tracking process. The preview shows 1 frame per second of the video with the trajectories overlaid on top. This will slow down a bit the tracking process, but this can be used to quickly check that the tracking is working well when deciding on the right set of tracking parameters.</li>
 </ul>
 <p><img src="images/z2_11.jpg" style="border-radius: 5px; border-style: groove;"></p>
 <p>Once all is set, you can finally click on the “Start tracking” button, set a file in the navigator that pops up to store the tracking data, and just let the app works its magic. The data will be saved as a CSV file and <a href="#output">the next section</a> will detail the content of this file.</p>
@@ -194,6 +194,7 @@
 <ul>
 <li>“frame” is the video frame number at which the measurements along the corresponding row have been made.</li>
 <li>“track” is the identity of the tracked object as estimated by the app.</li>
+<li>“class” is a column that is present for compatibility with <a href="https://swarm-lab.github.io/trackRai/" class="external-link">trackRai</a> and can be ignored when using trackRcv.</li>
 <li>“x” is the x coordinate of the object location in pixels in the context of the video frame. The origin is set at the top-left corner of the frame.</li>
 <li>“y” is the y coordinate of the object location in pixels in the context of the video frame. The origin is set at the top-left corner of the frame.</li>
 <li>“width” is the width in pixels of the object.</li>
