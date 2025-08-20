@@ -88,7 +88,7 @@ shiny::observeEvent(refresh_display(), {
                 },
                 contrast = c(255, 255, 255),
                 thickness = input$line_width_x,
-                outline = max(1, input$line_width_x)
+                outline = max(1, input$line_width_x + 1)
               ),
               by = .(track_fixed)
             ]
@@ -105,8 +105,8 @@ shiny::observeEvent(refresh_display(), {
                 input$tag_scale_x,
                 c(255, 255, 255),
                 c(0, 0, 0),
-                input$line_width_x,
-                max(1, input$line_width_x)
+                1.5 * input$tag_scale_x,
+                max(1, 1.5 * input$tag_scale_x + 1)
               ),
               by = .(track_fixed)
             ]

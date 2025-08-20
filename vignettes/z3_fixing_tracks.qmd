@@ -57,7 +57,7 @@ Below again are 6 buttons that allow you to perform a number of correcting opera
 
 Under these buttons, some basic statistics about the tracks are displayed below the fixing controls. These can be useful to track your progress during a fixing session. For instance, if the statistics table shows that your file contains 10 tracks but you know you only had 8 individuals in your experiment, this is a good indication that some errors remain to be fixed.
 
-Finally, at the very bottom of control panel, you can modify the “Tag scale” and “Tag line width” parameters to make the track tags more visible on the video.
+Finally, at the very bottom of control panel, you can modify the “Tag scale” and “Tag line width” parameters to make the track tags more visible on the video. You can also toggle the “Show IDs” and “Show boxes” buttons to show/hide the tags and boxes overlaid on top of the image. This can be useful when trying to tell apart objects that are very close to each other. 
 
 ------------------------------------------------------------------------
 

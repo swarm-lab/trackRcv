@@ -79,7 +79,8 @@ shiny::observeEvent(refresh_display(), {
         ct,
         c(0, 224, 0),
         c(255, 255, 255),
-        max(1, 1.5 * sc)
+        max(1, round(sc)),
+        max(1, round(sc) + 1)
       )
     }
 
