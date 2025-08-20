@@ -109,7 +109,7 @@ shiny::observeEvent(loop_debounced(), {
     if (loop() <= n) {
       frame <<- the_video$read()[1]
 
-      if (input$preview_tracks_x == "Yes") {
+      if (input$preview_tracks_x) {
         to_display <<- frame$copy()
       }
 
@@ -258,7 +258,7 @@ shiny::observeEvent(loop_debounced(), {
         }
 
         if (
-          input$preview_tracks_x == "Yes" & ((loop() %% input$look_back_x) == 0)
+          input$preview_tracks_x & ((loop() %% input$look_back_x) == 0)
         ) {
           void <- memory[
             frame == frame_number,

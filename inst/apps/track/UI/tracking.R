@@ -26,17 +26,15 @@ shinyjs::disabled(
 
     shiny::hr(),
 
-    shinyWidgets::awesomeRadio(
-      inputId = "preview_tracks_x",
-      label = "Preview tracks during tracking (slower)",
-      choices = c("Yes", "No"),
-      selected = "No",
-      inline = TRUE,
-      checkbox = TRUE,
-      width = "100%"
-    ),
-
-    shiny::hr(),
+    # shinyWidgets::awesomeRadio(
+    #   inputId = "preview_tracks_x",
+    #   label = "Preview tracks during tracking (slower)",
+    #   choices = c("Yes", "No"),
+    #   selected = "No",
+    #   inline = TRUE,
+    #   checkbox = TRUE,
+    #   width = "100%"
+    # ),
 
     shinyFiles::shinySaveButton(
       "track_button",
@@ -44,6 +42,20 @@ shinyjs::disabled(
       "Save tracks as...",
       filetype = "csv",
       class = "fullWidth"
+    ),
+
+    shiny::div(
+      shinyWidgets::prettyToggle(
+        "preview_tracks_x",
+        label_on = "Preview tracks (slower)",
+        label_off = "Preview tracks (slower)",
+        value = FALSE,
+        width = "100%",
+        shape = "curve",
+        outline = TRUE,
+        bigger = TRUE
+      ),
+      style = "text-align: center; margin-top: 10px;"
     ),
 
     shiny::hr()

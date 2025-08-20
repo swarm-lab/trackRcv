@@ -156,7 +156,7 @@ There are a few more parameters that you can set before launching the tracking:
 
 -   “Look back” controls how many past frames the tracking algorithm should take into account to associate each detected object to a track. This is a useful parameter to take into account if, for instance, the objects tend to disappear for a few frames from time to time.
 -   “Maximum distance” controls the maximum distance in pixels that an object can move between two frames to be still considered as belonging to the same track.
--   “Preview tracks during tracking” controls whether a preview of the tracking results should be displayed during the tracking process. The preview shows 1 frame per second of the video with the trajectories overlaid on top. This will slow down a bit the tracking process, but this can be used to check that the tracking is working well when deciding on the right set of tracking parameters.
+-   “Preview tracks (slower)” controls whether a preview of the tracking results should be displayed during the tracking process. The preview shows 1 frame per second of the video with the trajectories overlaid on top. This will slow down a bit the tracking process, but this can be used to quickly check that the tracking is working well when deciding on the right set of tracking parameters.
 
 ![](images/z2_11.jpg){style="border-radius: 5px; border-style: groove;"}
 
@@ -172,6 +172,7 @@ Once the app is done processing the video, the resulting CSV file will contain b
 
 -   “frame” is the video frame number at which the measurements along the corresponding row have been made.
 -   “track” is the identity of the tracked object as estimated by the app.
+-   “class” is a column that is present for compatibility with [trackRai](https://swarm-lab.github.io/trackRai/) and can be ignored when using trackRcv. 
 -   “x” is the x coordinate of the object location in pixels in the context of the video frame. The origin is set at the top-left corner of the frame.
 -   “y” is the y coordinate of the object location in pixels in the context of the video frame. The origin is set at the top-left corner of the frame.
 -   “width” is the width in pixels of the object.
