@@ -56,7 +56,6 @@ Below the navigation controls, you will find four numeric input fields:
 
 Below the input fields, you will find four tick boxes that will allow you to show/hide the ID number or the class of each object, the colored boxes delineating them, and the trajectories that the tracked objects have taken during a fixed number of frames.
 
-
 Finally, at the very bottom of the app window, the “Export video” button allows you to export the video with the tracked objects superimposed on it. After clicking this button, the app will prompt you to select a location to save the exported video. Once this is done, the export will start and the video will be saved in the selected location.
 
 ------------------------------------------------------------------------

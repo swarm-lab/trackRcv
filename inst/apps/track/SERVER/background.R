@@ -48,9 +48,11 @@ shiny::observeEvent(refresh_display(), {
           .drawPolyLine(
             to_display,
             ghost_coords,
-            TRUE,
-            c(255L, 255L, 255L),
-            sc
+            closed = TRUE,
+            color = c(255, 255, 255),
+            contrast = c(0, 0, 0),
+            thickness = max(1, round(sc)),
+            outline = max(1, round(sc))
           )
         }
 
@@ -60,10 +62,10 @@ shiny::observeEvent(refresh_display(), {
               to_display,
               ghost_coords[i, 1],
               ghost_coords[i, 2],
-              r,
-              c(0L, 0L, 255L),
-              c(255L, 255L, 255L),
-              sc
+              radius = r,
+              color = c(0, 0, 255),
+              contrast = c(255, 255, 255),
+              thickness = max(1, round(sc))
             )
           }
         }
@@ -185,37 +187,31 @@ shiny::observeEvent(input$ghost_button, {
 })
 
 shinyjs::onevent("click", "display_img", function(props) {
+  px <- trackRcv::n_col(to_display) *
+    ((props$offsetX -
+      (input$display_img_uiwidth - input$display_img_imgwidth) / 2) /
+      input$display_img_imgwidth)
+  py <- trackRcv::n_row(to_display) *
+    (props$offsetY / input$display_img_imgheight)
+
   if (collect_ghost() > 0) {
-    x <- n_col(to_display) * (props$offsetX / input$display_img_width)
-    y <- n_row(to_display) * (props$offsetY / input$display_img_height)
-    ghost_coords <<- rbind(ghost_coords, c(x, y))
+    ghost_coords <<- rbind(ghost_coords, c(px, py))
     refresh_display(refresh_display() + 1)
   } else if (collect_mask() > 0) {
-    x <- n_col(to_display) * (props$offsetX / input$display_img_width)
-    y <- n_row(to_display) * (props$offsetY / input$display_img_height)
-    mask_coords <<- rbind(mask_coords, c(x, y))
-
+    mask_coords <<- rbind(mask_coords, c(px, py))
     if (collect_mask() == 2 & nrow(mask_coords) >= 5) {
       stop_mask_collection(stop_mask_collection() + 1)
     }
-
     refresh_display(refresh_display() + 1)
   } else if (collect_origin() > 0) {
-    x <- n_col(to_display) * (props$offsetX / input$display_img_width)
-    y <- n_row(to_display) * (props$offsetY / input$display_img_height)
-    origin(c(x, y))
+    origin(c(px, py))
     stop_origin_collection(stop_origin_collection() + 1)
     refresh_display(refresh_display() + 1)
   } else if (collect_scale() > 0) {
-    x <- n_col(to_display) * (props$offsetX / input$display_img_width)
-    y <- n_row(to_display) *
-      (props$offsetY / input$display_img_height)
-    scale_coords <<- rbind(scale_coords, c(x, y))
-
+    scale_coords <<- rbind(scale_coords, c(px, py))
     if (nrow(scale_coords) >= 2) {
       stop_scale_collection(stop_scale_collection() + 1)
     }
-
     refresh_display(refresh_display() + 1)
   }
 })
