@@ -2,11 +2,11 @@ pandoc: 3.1.11
 pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
-  z1_installing_trackRcv: z1_installing_trackRcv.html
-  z2_tracking_objects: z2_tracking_objects.html
-  z3_fixing_tracks: z3_fixing_tracks.html
-  z4_visualizing_tracks: z4_visualizing_tracks.html
-last_built: 2025-08-20T16:03Z
+  z1_install: z1_install.html
+  z2_track: z2_track.html
+  z3_fix: z3_fix.html
+  z4_visualize: z4_visualize.html
+last_built: 2025-08-26T15:36Z
 urls:
   reference: https://swarm-lab.github.io/trackRcv/reference
   article: https://swarm-lab.github.io/trackRcv/articles
