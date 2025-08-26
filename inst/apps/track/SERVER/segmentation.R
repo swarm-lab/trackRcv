@@ -77,10 +77,10 @@ shiny::observeEvent(refresh_display(), {
       .drawContour(
         to_display,
         ct,
-        c(0, 224, 0),
-        c(255, 255, 255),
-        max(1, round(sc)),
-        max(1, round(sc) + 1)
+        color = c(0, 224, 0),
+        contrast = c(255, 255, 255),
+        thickness = max(1.5, round(sc)),
+        outline = max(1.5, round(sc))
       )
     }
 

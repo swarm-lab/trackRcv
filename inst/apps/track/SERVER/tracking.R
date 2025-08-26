@@ -269,10 +269,10 @@ shiny::observeEvent(loop_debounced(), {
               .SD$width,
               .SD$height,
               .SD$angle,
-              .shades[, (.BY$track %% ncol(.shades)) + 1],
-              c(255, 255, 255),
-              max(1, round(sc)),
-              max(1, round(sc) + 1)
+              color = .shades[, (.BY$track %% ncol(.shades)) + 1],
+              contrast = c(255, 255, 255),
+              thickness = max(1, round(sc)),
+              outline = max(1, round(sc) + 1)
             ),
             by = .(track)
           ]
@@ -281,11 +281,11 @@ shiny::observeEvent(loop_debounced(), {
             .drawPolyLine(
               to_display,
               cbind(.SD$x, .SD$y),
-              FALSE,
-              .shades[, (.BY$track %% ncol(.shades)) + 1],
-              c(255, 255, 255),
-              max(1, round(sc)),
-              max(1, round(sc) + 1)
+              closed = FALSE,
+              color = .shades[, (.BY$track %% ncol(.shades)) + 1],
+              contrast = c(255, 255, 255),
+              thickness = max(1, round(sc)),
+              outline = max(1, round(sc) + 1)
             ),
             by = .(track)
           ]

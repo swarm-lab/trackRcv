@@ -156,10 +156,10 @@ shiny::observeEvent(refresh_display(), {
           .SD$width,
           .SD$height,
           .SD$angle,
-          .shades[, (.BY$id %% ncol(.shades)) + 1],
-          c(255, 255, 255),
-          max(1, round(sc)),
-          max(1, round(sc) + 1)
+          color = .shades[, (.BY$id %% ncol(.shades)) + 1],
+          contrast = c(255, 255, 255),
+          thickness = max(1, round(sc)),
+          outline = max(1, round(sc))
         ),
         by = .(id)
       ]
@@ -171,11 +171,11 @@ shiny::observeEvent(refresh_display(), {
     .drawPolyLine(
       to_display,
       rbind(c(x, y - 50), c(x, y), c(x + 50, y)),
-      FALSE,
-      c(255L, 255L, 255),
-      c(0, 0, 0),
-      max(1, round(sc)),
-      max(1, round(sc) + 1)
+      closed = FALSE,
+      color = c(255, 255, 255),
+      contrast = c(0, 0, 0),
+      thickness = max(1, round(sc)),
+      outline = max(1, round(sc) + 1)
     )
 
     .drawText(
@@ -183,11 +183,11 @@ shiny::observeEvent(refresh_display(), {
       "50 px",
       x + 6 * sc,
       y - 6 * sc,
-      as.integer(max(0.5, round(0.5 * sc))),
-      c(255L, 255L, 255L),
-      c(0, 0, 0),
-      max(1, round(sc)),
-      max(1, round(sc) + 1)
+      scale = as.integer(max(0.5, round(0.5 * sc))),
+      color = c(255L, 255L, 255L),
+      contrast = c(0, 0, 0),
+      thickness = max(1, round(sc)),
+      outline = max(1, round(sc) + 1)
     )
 
     print_display(print_display() + 1)

@@ -1,6 +1,6 @@
 # Globals and reactives --------------------------------------------------
 volumes <- c(Home = fs::path_home(), shinyFiles::getVolumes()())
-video_range <- c(0, 0)
+# video_range <- c(0, 0)
 the_video <- NULL
 the_image <- NULL
 the_tracks <- NULL
@@ -117,7 +117,6 @@ shiny::observeEvent(refresh_display(), {
       to_display <<- black_screen$copy()
     }
 
-    js$uishape("display_img")
     print_display(print_display() + 1)
   }
 })
@@ -156,12 +155,17 @@ output$display <- shiny::renderUI({
   }
 })
 
-session$onFlushed(function() {
-  js$uishape("display_img")
-})
+session$onFlushed(
+  function() {
+    js$uishape("display_img")
+    js$imgshape("display_img")
+  },
+  once = FALSE
+)
 
 shiny::observeEvent(input$win_resize, {
   js$uishape("display_img")
+  js$imgshape("display_img")
 })
 
 
@@ -286,7 +290,7 @@ shiny::observeEvent(tracks_path(), {
 # Video navigation -------------------------------------------------------
 shiny::observeEvent(input$video_controls_x, {
   if (is_video_capture(the_video)) {
-    the_frame(input$video_controls_x[2])
+    the_frame(input$video_controls_x)
   }
 })
 
@@ -297,95 +301,52 @@ shiny::observeEvent(the_frame(), {
   }
 })
 
-# shiny::observeEvent(input$leftKey, {
-#   shinyjs::click("minus_frame", asis = FALSE)
-# })
-
-# shiny::observeEvent(input$minus_frame, {
 shiny::observeEvent(input$leftKey, {
-  if (is_video_capture(the_video)) {
-    vals <- input$video_controls_x
-
-    if (vals[2] > vals[1]) {
-      vals[2] <- vals[2] - 1
+  if (trackRcv::is_video_capture(the_video)) {
+    if (input$video_controls_x > 1) {
       shinyWidgets::updateNoUiSliderInput(
         session,
         "video_controls_x",
-        value = vals
+        value = input$video_controls_x - 1
       )
     }
   }
 })
 
-# shiny::observeEvent(input$rightKey, {
-#   shinyjs::click("plus_frame", asis = FALSE)
-# })
-
-# shiny::observeEvent(input$plus_frame, {
 shiny::observeEvent(input$rightKey, {
-  if (is_video_capture(the_video)) {
-    vals <- input$video_controls_x
-
-    if (vals[2] < vals[3]) {
-      vals[2] <- vals[2] + 1
+  if (trackRcv::is_video_capture(the_video)) {
+    if (input$video_controls_x < trackRcv::n_frames(the_video)) {
       shinyWidgets::updateNoUiSliderInput(
         session,
         "video_controls_x",
-        value = vals
+        value = input$video_controls_x + 1
       )
     }
   }
 })
 
-# shiny::observeEvent(input$downKey, {
-#   shinyjs::click("minus_sec", asis = FALSE)
-# })
-
-# shiny::observeEvent(input$minus_sec, {
 shiny::observeEvent(input$downKey, {
-  if (is_video_capture(the_video)) {
-    vals <- input$video_controls_x
-
-    if (vals[2] >= (vals[1] + fps(the_video))) {
-      vals[2] <- vals[2] - fps(the_video)
+  if (trackRcv::is_video_capture(the_video)) {
+    if (input$video_controls_x >= (1 + trackRcv::fps(the_video))) {
       shinyWidgets::updateNoUiSliderInput(
         session,
         "video_controls_x",
-        value = vals
-      )
-    } else {
-      vals[2] <- vals[1]
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = vals
+        value = input$video_controls_x - trackRcv::fps(the_video)
       )
     }
   }
 })
 
-# shiny::observeEvent(input$upKey, {
-#   shinyjs::click("plus_sec", asis = FALSE)
-# })
-
-# shiny::observeEvent(input$plus_sec, {
 shiny::observeEvent(input$upKey, {
-  if (is_video_capture(the_video)) {
-    vals <- input$video_controls_x
-
-    if (vals[2] <= (vals[3] - fps(the_video))) {
-      vals[2] <- vals[2] + fps(the_video)
+  if (trackRcv::is_video_capture(the_video)) {
+    if (
+      input$video_controls_x <=
+        (trackRcv::n_frames(the_video) - trackRcv::fps(the_video))
+    ) {
       shinyWidgets::updateNoUiSliderInput(
         session,
         "video_controls_x",
-        value = vals
-      )
-    } else {
-      vals[2] <- vals[3]
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = vals
+        value = input$video_controls_x + trackRcv::fps(the_video)
       )
     }
   }
@@ -403,8 +364,8 @@ output$track_stats <- shiny::renderTable(
       ]
       errors(rbind(
         data.table::data.table(
-          track = tmp[first > input$video_controls_x[1]]$track_fixed,
-          frame = tmp[first > input$video_controls_x[1]]$first,
+          track = tmp[first > 1]$track_fixed,
+          frame = tmp[first > 1]$first,
           type = "appears"
         ),
         data.table::data.table(
@@ -471,12 +432,10 @@ shiny::observeEvent(
   input$suspect,
   {
     if (is_video_capture(the_video)) {
-      vals <- input$video_controls_x
-      vals[2] <- as.numeric(sub("_.*", "", input$suspect))
       shinyWidgets::updateNoUiSliderInput(
         session,
         "video_controls_x",
-        value = vals
+        value = as.numeric(sub("_.*", "", input$suspect))
       )
     }
   },
@@ -494,7 +453,7 @@ shiny::observeEvent(input$reassign_track, {
     ids <- c(
       "",
       the_tracks[
-        ignore == FALSE & frame == input$video_controls_x[2]
+        ignore == FALSE & frame == input$video_controls_x
       ]$track_fixed
     )
 
@@ -544,7 +503,7 @@ shiny::observeEvent(input$ok_reassign, {
       idx <- the_tracks[, track_fixed] == old_id
       the_tracks[idx, track_fixed := new_id]
       changes[[length(changes) + 1]] <<- list(
-        frame = input$video_controls_x[2],
+        frame = input$video_controls_x,
         type = "reassign",
         idx = which(idx),
         revert = as.numeric(old_id)
@@ -577,7 +536,7 @@ shiny::observeEvent(input$remove_track, {
     ids <- c(
       "",
       the_tracks[
-        ignore == FALSE & frame == input$video_controls_x[2]
+        ignore == FALSE & frame == input$video_controls_x
       ]$track_fixed
     )
 
@@ -610,10 +569,10 @@ shiny::observeEvent(input$ok_remove, {
 
   if (!is.na(rm_id)) {
     idx <- the_tracks[, track_fixed] == rm_id &
-      the_tracks[, frame] >= input$video_controls_x[2]
+      the_tracks[, frame] >= input$video_controls_x
     the_tracks[idx, ignore := TRUE]
     changes[[length(changes) + 1]] <<- list(
-      frame = input$video_controls_x[2],
+      frame = input$video_controls_x,
       type = "remove",
       idx = which(idx),
       revert = FALSE
@@ -633,7 +592,7 @@ shiny::observeEvent(input$swap_track, {
     ids <- c(
       "",
       the_tracks[
-        ignore == FALSE & frame == input$video_controls_x[2]
+        ignore == FALSE & frame == input$video_controls_x
       ]$track_fixed
     )
 
@@ -689,13 +648,13 @@ shiny::observeEvent(input$ok_swap, {
 
   if (!is.na(id1) & !is.na(id2)) {
     idx1 <- the_tracks[, track_fixed] == id1 &
-      the_tracks[, frame] >= input$video_controls_x[2]
+      the_tracks[, frame] >= input$video_controls_x
     idx2 <- the_tracks[, track_fixed] == id2 &
-      the_tracks[, frame] >= input$video_controls_x[2]
+      the_tracks[, frame] >= input$video_controls_x
     the_tracks[idx1, track_fixed := id2]
     the_tracks[idx2, track_fixed := id1]
     changes[[length(changes) + 1]] <<- list(
-      frame = input$video_controls_x[2],
+      frame = input$video_controls_x,
       type = "swap",
       idx1 = which(idx1),
       idx2 = which(idx2),
@@ -717,7 +676,7 @@ shiny::observeEvent(input$merge_track, {
     ids <- c(
       "",
       the_tracks[
-        ignore == FALSE & frame == input$video_controls_x[2]
+        ignore == FALSE & frame == input$video_controls_x
       ]$track_fixed
     )
 
@@ -864,7 +823,7 @@ shiny::observeEvent(input$ok_merge, {
     the_tracks[idx, names(fixed) := fixed]
 
     changes[[length(changes) + 1]] <<- list(
-      frame = input$video_controls_x[2],
+      frame = input$video_controls_x,
       type = "merge",
       idx = which(idx),
       revert = orig
@@ -900,12 +859,10 @@ shiny::observeEvent(input$revert_changes, {
         ]
       }
 
-      vals <- input$video_controls_x
-      vals[2] <- changes[[l]]$frame
       shinyWidgets::updateNoUiSliderInput(
         session,
         "video_controls_x",
-        value = vals
+        value = changes[[l]]$frame
       )
 
       changes[[l]] <<- NULL
