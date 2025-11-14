@@ -1,0 +1,42 @@
+# 1. Installing trackRcv
+
+## 1. Installing trackRcv
+
+### 1.1. From CRAN
+
+trackRcv is currently not available on CRAN.
+
+### 1.2. From GitHub
+
+You can install trackRcv and the rest of its dependencies by simply
+typing the following command in your R console:
+
+``` r
+pak::pak("swarm-lab/trackRcv")
+```
+
+------------------------------------------------------------------------
+
+## 2. Setting up trackRcv
+
+Once the installation is complete, you will need to run the following
+command in your R console:
+
+``` r
+trackRcv::install_cv()
+```
+
+Answer “Yes” to all the questions. This will create a dedicated Python
+virtual environment containing all the Python dependencies that trackRcv
+needs to run. This environment will not interfere with any other Python
+environments on your system, and it can be removed at any time by
+running the following command:
+
+``` r
+trackRcv::remove_cv()
+```
+
+Once this is done, you can proceed to the next tutorial to learn how to
+use trackRcv.
+
+------------------------------------------------------------------------
