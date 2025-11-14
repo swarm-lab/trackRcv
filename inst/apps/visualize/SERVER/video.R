@@ -89,7 +89,7 @@ shiny::observeEvent(refresh_display(), {
       sc <- max(c(n_row(to_display), n_col(to_display)) / 720)
 
       if (data.table::is.data.table(the_tracks)) {
-        current_tracks <- the_tracks[frame == the_frame()]$track_fixed
+        current_tracks <- the_tracks[frame == the_frame() & !ignore]$track_fixed
 
         if (length(current_tracks) > 0) {
           dt <- the_tracks[
@@ -502,7 +502,7 @@ shiny::observeEvent(export_path(), {
       ))
 
       if (data.table::is.data.table(the_tracks)) {
-        current_tracks <- the_tracks[frame == current_frame]$track_fixed
+        current_tracks <- the_tracks[frame == current_frame & !ignore]$track_fixed
 
         if (length(current_tracks) > 0) {
           dt <- the_tracks[
