@@ -62,7 +62,9 @@ shiny::observeEvent(input$show_boxes, {
 })
 
 shiny::observeEvent(refresh_display(), {
-  if (input$main == "1") {
+  if (
+    input$main == "1" & !is.na(input$line_width_x) & !is.na(input$tag_scale_x)
+  ) {
     if (is_image(the_image)) {
       to_display <<- the_image$copy()
       sc <- max(c(n_row(to_display), n_col(to_display)) / 720)
@@ -423,7 +425,12 @@ shiny::observeEvent(
       names(choices) <- c("No issues detected")
     }
 
-    shiny::updateSelectInput(session, "suspect", choices = choices)
+    shiny::updateSelectizeInput(
+      session,
+      "suspect",
+      choices = choices,
+      server = TRUE
+    )
   },
   ignoreInit = TRUE
 )
