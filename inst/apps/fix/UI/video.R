@@ -36,7 +36,7 @@ shinyWidgets::verticalTabPanel(
 
   shiny::hr(),
 
-  shiny::selectInput(
+  shiny::selectizeInput(
     "suspect",
     "Suspected issues",
     c(),

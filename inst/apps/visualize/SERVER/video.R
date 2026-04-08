@@ -94,8 +94,8 @@ shiny::observeEvent(refresh_display(), {
         if (length(current_tracks) > 0) {
           dt <- the_tracks[
             frame <= the_frame() &
-              frame >= (the_frame() - input$track_length_x) &
-              track_fixed %in% current_tracks
+              frame >= (the_frame() - input$track_length_x) # &
+              # track_fixed %in% current_tracks
           ]
 
           if (input$show_box) {
@@ -507,8 +507,8 @@ shiny::observeEvent(export_path(), {
         if (length(current_tracks) > 0) {
           dt <- the_tracks[
             frame <= current_frame &
-              frame >= (current_frame - input$track_length_x) &
-              track_fixed %in% current_tracks
+              frame >= (current_frame - input$track_length_x) # &
+              # track_fixed %in% current_tracks
           ]
 
           if (input$show_box) {

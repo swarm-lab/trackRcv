@@ -10,3 +10,6 @@ docs
 inst/doc
 **/.quarto/
 graveyard/
+/.quarto/
+**/*.quarto_ipynb
+INEFFICIENCIES.md
