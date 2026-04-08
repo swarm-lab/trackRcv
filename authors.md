@@ -9,13 +9,13 @@
 
 ## Citation
 
-Garnier S (2025). *trackRcv: Multi-Object Tracking*. R package version
+Garnier S (2026). *trackRcv: Multi-Object Tracking*. R package version
 0.1.0, <https://swarm-lab.github.io/trackRcv/>.
 
     @Manual{,
       title = {trackRcv: Multi-Object Tracking},
       author = {Simon Garnier},
-      year = {2025},
+      year = {2026},
       note = {R package version 0.1.0},
       url = {https://swarm-lab.github.io/trackRcv/},
     }
