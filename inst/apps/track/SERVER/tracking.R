@@ -15,6 +15,7 @@ gray <- NULL
 bw <- NULL
 cc <- NULL
 k_size <- NULL
+dilate_kernel <- NULL
 
 tracks_path <- shiny::reactiveVal()
 loop <- shiny::reactiveVal(0)
@@ -98,6 +99,17 @@ shiny::observeEvent(tracks_path(), {
       k_size <<- as.integer(k_size + ((k_size %% 2) == 0))
     }
 
+    # Round structuring element used to consolidate raw connected
+    # components separated by less than the calibrated single-object
+    # width (e.g. a narrow-neck disconnect) -- independent of any
+    # previous-frame position. Built once per tracking run since
+    # blob_width_x is fixed for its duration.
+    dilate_radius <- as.integer(ceiling(input$blob_width_x / 2))
+    dilate_kernel <<- cv2$getStructuringElement(
+      cv2$MORPH_ELLIPSE,
+      c(2L * dilate_radius + 1L, 2L * dilate_radius + 1L)
+    )
+
     the_video$set(cv2$CAP_PROP_POS_FRAMES, input$video_controls_x[1] - 1)
 
     loop(1)
@@ -131,50 +143,58 @@ shiny::observeEvent(loop_debounced(), {
       gray <<- cv2$cvtColor(frame, cv2$COLOR_BGR2GRAY)
       bw <<- cv2$compare(gray, input$threshold_x, 2L)
 
-      cc <<- cv2$connectedComponentsWithStats(bw)
-      nz <- reticulate::py_to_r(cv2$findNonZero(cc[1]))
-      labs <- reticulate::py_to_r(cc[1][cc[1]$nonzero()])
+      # Consolidate raw connected components that are close enough, in
+      # pixel space, to plausibly be one fragmented object (e.g. a narrow
+      # neck disconnect) -- never based on any previous-frame position.
+      bw_dilated <- cv2$dilate(bw, dilate_kernel)
+      cc <<- cv2$connectedComponentsWithStats(bw_dilated)
+
+      # Real (undilated) foreground pixels only; each is looked up in the
+      # dilated labeling to find its consolidated group.
+      nz <- reticulate::py_to_r(cv2$findNonZero(bw))
+      group <- reticulate::py_to_r(
+        cc[1][reticulate::tuple(np$int32(nz[, 2]), np$int32(nz[, 1]))]
+      )
+      w <- reticulate::py_to_r(
+        gray[reticulate::tuple(np$int32(nz[, 2]), np$int32(nz[, 1]))]
+      ) - input$threshold_x
 
       dt <- data.table::data.table(
-        label = labs,
-        x = as.numeric(nz[,, 1]),
-        y = as.numeric(nz[,, 2])
+        group = group,
+        x = as.numeric(nz[, 1]),
+        y = as.numeric(nz[, 2]),
+        w = w
       )
 
-      if (is.null(centers)) {
-        centers <<- dt[, .(x = mean(x), y = mean(y)), by = .(label)][, 2:3]
-      }
-
-      d <- Rfast::dista(dt[, 2:3], centers)
-      dt[,
-        c("k", "kd") := list(Rfast::rowMins(d), Rfast::rowMins(d, value = TRUE))
-      ]
-      dt[kd > (2 * input$blob_height_x), "k"] <- NA
-      gr <- unique(dt[, .(label, k)])
-      data.table::setorder(gr, label)
-      gr[, new_id := label]
-
-      for (j in seq_len(nrow(gr))) {
-        friends <- gr$new_id[gr$k == gr$k[j]]
-        gr$new_id[gr$new_id %in% friends] <- gr$new_id[j]
-      }
-
-      uid <- unique(gr$new_id)
       dt_mat <- as.matrix(dt)
-      gr_mat <- as.matrix(gr)
+      uid <- unique(dt$group)
+
+      # Each previous-frame position seeds the group whose nearest real
+      # pixel is closest to it, if within max_dist_x; a position seeds at
+      # most one group, a group may receive zero, one, or several seeds.
+      seed_group <- rep(NA_real_, if (is.null(centers)) 0L else nrow(centers))
+      if (!is.null(centers) && nrow(centers) > 0 && nrow(dt_mat) > 0) {
+        d <- Rfast::dista(centers, dt_mat[, 2:3, drop = FALSE])
+        nearest_ix <- Rfast::rowMins(d)
+        nearest_dist <- Rfast::rowMins(d, value = TRUE)
+        in_range <- nearest_dist <= input$max_dist_x
+        seed_group[in_range] <- dt_mat[nearest_ix[in_range], 1]
+      }
+
+      max_area <- pi * (input$blob_width_x / 2) * (input$blob_height_x / 2)
 
       shape <- c()
 
       for (j in seq_len(length(uid))) {
-        ix <- gr_mat[, 3] == uid[j]
-        ugr <- unique(gr_mat[ix, 2])
-        pos <- dt_mat[dt_mat[, 1] %in% gr_mat[ix, 1], 2:3]
-        pos <- pos + runif(nrow(pos) * 2, -1, 1)
+        ix <- dt_mat[, 1] == uid[j]
+        pos <- dt_mat[ix, 2:4, drop = FALSE]
 
-        if (any(is.na(ugr))) {
+        seed_ix <- which(!is.na(seed_group) & seed_group == uid[j])
+
+        if (length(seed_ix) == 0) {
           cl <- kbox(
             pos,
-            1,
+            max(1, ceiling(nrow(pos) / max_area)),
             iter.max = 1000,
             split = TRUE,
             split.width = input$blob_width_x,
@@ -185,7 +205,7 @@ shiny::observeEvent(loop_debounced(), {
         } else {
           cl <- kbox(
             pos,
-            centers[ugr, , drop = FALSE],
+            centers[seed_ix, , drop = FALSE],
             iter.max = 1000,
             split = TRUE,
             split.width = input$blob_width_x,
@@ -232,7 +252,17 @@ shiny::observeEvent(loop_debounced(), {
         to_write[, class := "object"]
         data.table::setcolorder(
           to_write,
-          c("frame", "track", "class", "x", "y", "width", "height", "angle", "n")
+          c(
+            "frame",
+            "track",
+            "class",
+            "x",
+            "y",
+            "width",
+            "height",
+            "angle",
+            "n"
+          )
         )
 
         if (!is.null(scale_px()) & !is.null(scale_real())) {
@@ -257,9 +287,7 @@ shiny::observeEvent(loop_debounced(), {
           data.table::fwrite(to_write, tracks_path(), append = TRUE)
         }
 
-        if (
-          input$preview_tracks_x & ((loop() %% input$look_back_x) == 0)
-        ) {
+        if (input$preview_tracks_x & ((loop() %% input$look_back_x) == 0)) {
           void <- memory[
             frame == frame_number,
             .drawBox(

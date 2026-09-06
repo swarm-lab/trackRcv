@@ -12,4 +12,9 @@ inst/doc
 graveyard/
 /.quarto/
 **/*.quarto_ipynb
-INEFFICIENCIES.md
+openspec/
+.agents
+.omp
+.claude
+handoffs
+inst/termites
