@@ -26,7 +26,7 @@ Imports:
     mvoutlier,
     pals,
     pracma,
-    reticulate,
+    reticulate (>= 1.31),
     Rfast,
     Rfast2,
     shiny,
