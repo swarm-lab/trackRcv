@@ -7,6 +7,7 @@ trajectory visualization app provided in the package. You can launch the
 app by typing the following command in the R console:
 
 ``` r
+
 library(trackRcv)
 trackR()
 ```
@@ -19,6 +20,7 @@ configuration. In RStudio at least, you can control where the app opens
 by setting the `launch.browser` option. For instance:
 
 ``` r
+
 trackR(launch.browser = shiny::paneViewer())
 ```
 

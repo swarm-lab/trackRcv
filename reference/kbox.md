@@ -24,7 +24,14 @@ kbox(
 
 - x:
 
-  A numeric matrix with two columns.
+  A numeric matrix with either two columns (x, y coordinates,
+  unweighted) or three columns (x, y coordinates and a non-negative
+  per-observation weight). When a weight column is supplied, cluster
+  means, covariances, and the internal fitting-time cardinality guard
+  become weight-aware (see
+  [`cec`](https://swarm-lab.github.io/cec/reference/cec.html)'s
+  `weights` argument); observations with a larger weight pull the fit
+  more strongly than observations with a smaller weight.
 
 - centers:
 
@@ -57,9 +64,11 @@ kbox(
 
 - min.size:
 
-  The minimum authorized size (in number of items) of a cluster. If a
-  cluster is smaller than `min.size`, the function will attempt to split
-  it in two.
+  The minimum authorized size (in number of items) of a final cluster.
+  Clusters smaller than `min.size` after all splitting is complete are
+  dropped from the returned result. `min.size` is also used to derive
+  the (weight-aware) cardinality guard applied during fitting, scaled to
+  each internal clustering call's own weight/point totals.
 
 - split.sensitivity:
 
@@ -71,6 +80,7 @@ kbox(
 A matrix with 6 columns: x and y coordinates of the centers of the
 clusters, width, height, and angle of the covariance ellipse best
 describing each cluster, and the number of element in each cluster.
+`NULL` if clustering fails or no cluster meets `min.size`.
 
 ## Author
 

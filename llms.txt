@@ -29,6 +29,7 @@ You can install the development version of trackRcv from
 [GitHub](https://github.com/) with:
 
 ``` r
+
 # install.packages("pak")
 pak::pak("swarm-lab/trackRcv")
 ```

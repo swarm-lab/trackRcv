@@ -12,6 +12,7 @@ You can install trackRcv and the rest of its dependencies by simply
 typing the following command in your R console:
 
 ``` r
+
 pak::pak("swarm-lab/trackRcv")
 ```
 
@@ -23,6 +24,7 @@ Once the installation is complete, you will need to run the following
 command in your R console:
 
 ``` r
+
 trackRcv::install_cv()
 ```
 
@@ -33,6 +35,7 @@ environments on your system, and it can be removed at any time by
 running the following command:
 
 ``` r
+
 trackRcv::remove_cv()
 ```
 

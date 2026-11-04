@@ -6,6 +6,7 @@ Once you are ready to process a video, you can launch the trackR by
 typing the following command in the R console:
 
 ``` r
+
 library(trackRcv)
 trackR()
 ```
@@ -18,6 +19,7 @@ configuration. In RStudio at least, you can control where the app opens
 by setting the `launch.browser` option. For instance:
 
 ``` r
+
 trackR(launch.browser = shiny::paneViewer())
 ```
 
