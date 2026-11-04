@@ -64,7 +64,13 @@ simplerTracker <- function(current, past, maxDist = 10) {
 #'  It is based on \code{\link[CEC]{cec}} but is limited to 2D matrices and
 #'  implements its own splitting process.
 #'
-#' @param x A numeric matrix with two columns.
+#' @param x A numeric matrix with either two columns (x, y coordinates,
+#'  unweighted) or three columns (x, y coordinates and a non-negative
+#'  per-observation weight). When a weight column is supplied, cluster
+#'  means, covariances, and the internal fitting-time cardinality guard
+#'  become weight-aware (see \code{\link[CEC]{cec}}'s \code{weights}
+#'  argument); observations with a larger weight pull the fit more
+#'  strongly than observations with a smaller weight.
 #'
 #' @param centers Either a matrix of initial centers or the number of initial
 #'  centers.
@@ -85,9 +91,12 @@ simplerTracker <- function(current, past, maxDist = 10) {
 #'  cluster is less dense than \code{split.density}, the function will attempt
 #'  to split it in two.
 #'
-#' @param min.size The minimum authorized size (in number of items) of a cluster.
-#'  If a cluster is smaller than \code{min.size}, the function will attempt to
-#'  split it in two.
+#' @param min.size The minimum authorized size (in number of items) of a
+#'  final cluster. Clusters smaller than \code{min.size} after all splitting
+#'  is complete are dropped from the returned result. \code{min.size} is
+#'  also used to derive the (weight-aware) cardinality guard applied during
+#'  fitting, scaled to each internal clustering call's own weight/point
+#'  totals.
 #'
 #' @param split.sensitivity The minimum amount of improvement in the cost
 #'  function of the cross-entropy clustering for a splitting event to be
@@ -95,7 +104,8 @@ simplerTracker <- function(current, past, maxDist = 10) {
 #'
 #' @return A matrix with 6 columns: x and y coordinates of the centers of the
 #'  clusters, width, height, and angle of the covariance ellipse best describing
-#'  each cluster, and the number of element in each cluster.
+#'  each cluster, and the number of element in each cluster. \code{NULL} if
+#'  clustering fails or no cluster meets \code{min.size}.
 #'
 #' @author Simon Garnier, \email{garnier@@njit.edu}
 #'
@@ -115,13 +125,25 @@ kbox <- function(
     x <- as.matrix(x)
   }
 
+  if (ncol(x) == 3) {
+    weights <- x[, 3]
+    x <- x[, 1:2]
+  } else {
+    weights <- NULL
+  }
+
+  card_min <- function(x, weights) {
+    max(sum(weights) * (min.size / nrow(x)), ncol(x) + 1)
+  }
+
   if (is.null(dim(centers))) {
     cl <- tryCatch(
       CEC::cec(
         x,
         centers,
         iter.max = iter.max,
-        card.min = min.size,
+        card.min = card_min(x, weights),
+        weights = weights,
         nstart = 10,
         threads = "auto",
         param = NULL
@@ -140,7 +162,8 @@ kbox <- function(
         x,
         centers,
         iter.max = iter.max,
-        card.min = min.size,
+        card.min = card_min(x, weights),
+        weights = weights,
         param = NULL
       ),
       error = function(cond) {
@@ -148,6 +171,8 @@ kbox <- function(
       }
     )
   }
+
+  iter_count <- cl$iterations
 
   if (is.null(cl)) {
     split <- FALSE
@@ -167,96 +192,64 @@ kbox <- function(
     test_width <- sh[3, ] / split.width
     test_height <- sh[4, ] / split.height
     test_density <- split.density /
-      (sh[6, ] /
-        ((sh[3, ] / 2) *
-          (sh[4, ] / 2) *
-          pi))
-    to_split <- test_width > 1 | test_height > 1 | test_density > 1
+      (sh[6, ] / ((sh[3, ] / 2) * (sh[4, ] / 2) * pi))
+    split_test <- test_width > 1 | test_height > 1 | test_density > 1
 
-    if (any(to_split)) {
-      tmp_cl <- tryCatch(
+    if (any(split_test) & (iter_count < iter.max)) {
+      to_split <- which.max(sh[6, ])
+      ix <- cl$cluster == to_split
+
+      sub_cl <- tryCatch(
         CEC::cec(
-          x,
-          cl$nclusters,
-          iter.max = iter.max,
-          card.min = min.size,
-          param = NULL,
-          nstart = 10,
-          threads = "auto"
+          x[ix, , drop = FALSE],
+          1,
+          iter.max = max(iter.max - iter_count, 1),
+          card.min = card_min(x[ix, , drop = FALSE], weights[ix]),
+          split = TRUE,
+          split.tries = 1,
+          split.limit = 2,
+          split.depth = 1,
+          split.initial.starts = 1,
+          weights = weights[ix]
         ),
         error = function(cond) {
           NULL
         }
       )
 
-      if (is.null(tmp_cl)) {
-        tmp_test_width <- 2
-      } else {
-        tmp_sh <- rbind(
-          mapply(
-            .cov2shape,
-            tmp_cl$covariances,
-            asplit(tmp_cl$centers, 1),
-            SIMPLIFY = TRUE
-          ),
-          n = Rfast::Table(tmp_cl$cluster)
-        )
+      iter_count <- iter_count + sub_cl$iterations
 
-        tmp_test_width <- tmp_sh[3, ] / split.width
-        tmp_test_height <- tmp_sh[4, ] / split.height
-        tmp_test_density <- split.density /
-          (tmp_sh[6, ] /
-            ((tmp_sh[3, ] / 2) *
-              (tmp_sh[4, ] / 2) *
-              pi))
-      }
+      tmp_cl <- tryCatch(
+        CEC::cec(
+          x,
+          rbind(sub_cl$centers, t(sh)[-to_split, 1:2, drop = FALSE]),
+          iter.max = max(iter.max - iter_count, 1),
+          card.min = card_min(x, weights),
+          weights = weights,
+          param = NULL
+        ),
+        error = function(cond) {
+          cl
+        }
+      )
+
+      iter_count <- iter_count + tmp_cl$iterations
 
       if (
-        any(tmp_test_width > 1 | tmp_test_height > 1 | tmp_test_density > 1)
+        1 - tmp_cl$cost.function / cl$cost.function >
+          split.sensitivity / sqrt(tmp_cl$nclusters)
       ) {
-        tmp_tmp_centers <- rbind(
-          cl$centers[!to_split, ],
-          do.call(
-            rbind,
-            lapply(which(to_split), function(i) {
-              cluster::clara(x[cl$cluster == i, ], 2, samples = 50)$medoids
-            })
-          )
-        )
-
-        tmp_tmp_cl <- tryCatch(
-          CEC::cec(
-            x,
-            tmp_tmp_centers,
-            iter.max = iter.max,
-            card.min = min.size,
-            param = NULL
-          ),
-          error = function(cond) {
-            cl
-          }
-        )
-
-        if (
-          1 - tmp_tmp_cl$cost.function / cl$cost.function >
-            split.sensitivity / sqrt(tmp_tmp_cl$nclusters)
-        ) {
-          cl <- tmp_tmp_cl
-          sh <- rbind(
-            mapply(
-              .cov2shape,
-              tmp_tmp_cl$covariances,
-              asplit(tmp_tmp_cl$centers, 1),
-              SIMPLIFY = TRUE
-            ),
-            n = Rfast::Table(tmp_tmp_cl$cluster)
-          )
-        } else {
-          split <- FALSE
-        }
-      } else {
         cl <- tmp_cl
-        sh <- tmp_sh
+        sh <- rbind(
+          mapply(
+            .cov2shape,
+            cl$covariances,
+            asplit(cl$centers, 1),
+            SIMPLIFY = TRUE
+          ),
+          n = Rfast::Table(cl$cluster)
+        )
+      } else {
         split <- FALSE
       }
     } else {
@@ -265,8 +258,14 @@ kbox <- function(
   }
 
   if (is.null(cl)) {
-    NULL
-  } else {
-    t(sh)
+    return(NULL)
   }
+
+  keep <- sh[6, ] >= min.size
+  if (!any(keep)) {
+    return(NULL)
+  }
+
+  t(sh[, keep, drop = FALSE])
 }
+

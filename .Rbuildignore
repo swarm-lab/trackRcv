@@ -10,4 +10,11 @@
 ^graveyard$
 ^logo\.png$
 ^logo\.svg$
-INEFFICIENCIES.md
+openspec
+^\.claude$
+^\.agents$
+^\.omp$
+^\.git$
+^\.gitignore$
+^handoffs$
+^inst/termites$

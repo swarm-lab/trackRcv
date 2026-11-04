@@ -1,6 +1,6 @@
 Package: trackRcv
 Title: Multi-Object Tracking
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("Simon", "Garnier", , "garnier@njit.edu", role = c("aut", "cre"),
         comment = c(ORCID = "0000-0002-3886-3974")),
@@ -12,14 +12,13 @@ Description: This package contains a series of Shiny-based apps to perform
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 URL: https://swarm-lab.github.io/trackRcv/
 Suggests: 
     knitr,
     quarto
 Imports: 
     autothresholdr,
-    CEC (>= 0.11.2),
+    CEC (>= 0.12.0),
     clue,
     cluster,
     data.table,
@@ -27,7 +26,7 @@ Imports:
     mvoutlier,
     pals,
     pracma,
-    reticulate,
+    reticulate (>= 1.31),
     Rfast,
     Rfast2,
     shiny,
@@ -39,3 +38,4 @@ Imports:
     stringr,
     utils
 VignetteBuilder: quarto
+Config/roxygen2/version: 8.1.0

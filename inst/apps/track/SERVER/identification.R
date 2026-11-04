@@ -96,52 +96,79 @@ shiny::observeEvent(refresh_display(), {
     gray <- cv2$cvtColor(frame, cv2$COLOR_BGR2GRAY)
     bw <- cv2$compare(gray, input$threshold_x, 2L)
 
-    cc <- cv2$connectedComponentsWithStats(bw)
-    nz <- reticulate::py_to_r(cv2$findNonZero(cc[1]))
-    labs <- reticulate::py_to_r(cc[1][cc[1]$nonzero()])
+    # Consolidate raw connected components that are close enough, in
+    # pixel space, to plausibly be one fragmented object (e.g. a narrow
+    # neck disconnect).
+    if (is.na(input$blob_width_x) || input$blob_width_x <= 0) {
+      bw_dilated <- bw
+    } else {
+      dilate_radius <- as.integer(ceiling(input$blob_width_x / 2))
+      dilate_kernel <- cv2$getStructuringElement(
+        cv2$MORPH_ELLIPSE,
+        c(2L * dilate_radius + 1L, 2L * dilate_radius + 1L)
+      )
+      bw_dilated <- cv2$dilate(bw, dilate_kernel)
+    }
+    cc <- cv2$connectedComponentsWithStats(bw_dilated)
+
+    # Real (undilated) foreground pixels only; each is looked up in the
+    # dilated labeling to find its consolidated group.
+    nz <- reticulate::py_to_r(cv2$findNonZero(bw))
+    group <- reticulate::py_to_r(
+      cc[1][reticulate::tuple(np$int32(nz[, 2]), np$int32(nz[, 1]))]
+    )
+    w <- reticulate::py_to_r(
+      gray[reticulate::tuple(np$int32(nz[, 2]), np$int32(nz[, 1]))]
+    ) - input$threshold_x
 
     dt <- data.table::data.table(
-      label = labs,
-      x = nz[,, 1],
-      y = nz[,, 2]
+      group = group,
+      x = nz[, 1],
+      y = nz[, 2],
+      w = w
     )
 
-    centers <- dt[, .(x = mean(x), y = mean(y)), by = .(label)]
-
-    d <- Rfast::dista(dt[, 2:3], centers[, 2:3])
-    dt[, k := Rfast::rowMins(d)]
-    gr <- unique(dt[, .(label, k)])
-    data.table::setorder(gr, label)
-    gr[, new_id := label]
-
-    for (j in seq_len(nrow(gr))) {
-      friends <- gr$new_id[gr$k == gr$k[j]]
-      gr$new_id[gr$new_id %in% friends] <- gr$new_id[j]
-    }
-
-    uid <- unique(gr$new_id)
     dt_mat <- as.matrix(dt)
-    gr <- as.matrix(gr)
+    uid <- unique(dt$group)
+
+    max_area <- if (is.na(input$blob_width_x) || is.na(input$blob_height_x)) {
+      NA
+    } else {
+      pi * (input$blob_width_x / 2) * (input$blob_height_x / 2)
+    }
 
     shape <- c()
 
     for (j in seq_len(length(uid))) {
-      ix <- gr[, 3] == uid[j]
-      ugr <- unique(gr[ix, 2])
-      pos <- dt_mat[dt_mat[, 1] %in% gr[ix, 1], 2:3]
-      pos <- pos + runif(nrow(pos) * 2, -1, 1)
+      ix <- dt_mat[, 1] == uid[j]
+      pos <- dt_mat[ix, 2:4, drop = FALSE]
+
+      n_centers <- if (is.na(max_area)) {
+        1
+      } else {
+        max(1, ceiling(nrow(pos) / max_area))
+      }
 
       cl <- kbox(
         pos,
-        centers[ugr, 2:3, drop = FALSE],
+        n_centers,
         iter.max = 1000,
         split = TRUE,
-        split.width = if (is.na(input$blob_width_x)) Inf else
-          input$blob_width_x,
-        split.height = if (is.na(input$blob_height_x)) Inf else
-          input$blob_height_x,
-        split.density = if (is.na(input$blob_density_x)) 0 else
-          input$blob_density_x,
+        split.width = if (is.na(input$blob_width_x)) {
+          Inf
+        } else {
+          input$blob_width_x
+        },
+        split.height = if (is.na(input$blob_height_x)) {
+          Inf
+        } else {
+          input$blob_height_x
+        },
+        split.density = if (is.na(input$blob_density_x)) {
+          0
+        } else {
+          input$blob_density_x
+        },
         min.size = if (is.na(input$blob_area_x)) 1 else input$blob_area_x
       )
       shape <- rbind(shape, cl)
@@ -259,15 +286,19 @@ shiny::observeEvent(input$auto_params, {
       cc <- cv2$connectedComponentsWithStats(bw)
       nz <- reticulate::py_to_r(cv2$findNonZero(cc[1]))
       labs <- reticulate::py_to_r(cc[1][cc[1]$nonzero()])
+      w <- reticulate::py_to_r(
+        gray[reticulate::tuple(np$int32(nz[, 2]), np$int32(nz[, 1]))]
+      ) - input$threshold_x
 
       dt <- data.table::data.table(
         label = labs,
-        x = as.numeric(nz[,, 1]),
-        y = as.numeric(nz[,, 2])
+        x = as.numeric(nz[, 1]),
+        y = as.numeric(nz[, 2]),
+        w = w
       )
 
       dt_summ <- dt[,
-        data.table::as.data.table(kbox(cbind(x, y) + runif(length(x) * 2, -1, 1))),
+        data.table::as.data.table(kbox(cbind(x, y, w))),
         by = .(label)
       ]
 

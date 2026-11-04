@@ -17,7 +17,13 @@ kbox(
 )
 }
 \arguments{
-\item{x}{A numeric matrix with two columns.}
+\item{x}{A numeric matrix with either two columns (x, y coordinates,
+unweighted) or three columns (x, y coordinates and a non-negative
+per-observation weight). When a weight column is supplied, cluster
+means, covariances, and the internal fitting-time cardinality guard
+become weight-aware (see \code{\link[CEC]{cec}}'s \code{weights}
+argument); observations with a larger weight pull the fit more
+strongly than observations with a smaller weight.}
 
 \item{centers}{Either a matrix of initial centers or the number of initial
 centers.}
@@ -38,9 +44,12 @@ two.}
 cluster is less dense than \code{split.density}, the function will attempt
 to split it in two.}
 
-\item{min.size}{The minimum authorized size (in number of items) of a cluster.
-If a cluster is smaller than \code{min.size}, the function will attempt to
-split it in two.}
+\item{min.size}{The minimum authorized size (in number of items) of a
+final cluster. Clusters smaller than \code{min.size} after all splitting
+is complete are dropped from the returned result. \code{min.size} is
+also used to derive the (weight-aware) cardinality guard applied during
+fitting, scaled to each internal clustering call's own weight/point
+totals.}
 
 \item{split.sensitivity}{The minimum amount of improvement in the cost
 function of the cross-entropy clustering for a splitting event to be
@@ -49,7 +58,8 @@ considered valid.}
 \value{
 A matrix with 6 columns: x and y coordinates of the centers of the
 clusters, width, height, and angle of the covariance ellipse best describing
-each cluster, and the number of element in each cluster.
+each cluster, and the number of element in each cluster. \code{NULL} if
+clustering fails or no cluster meets \code{min.size}.
 }
 \description{
 This function performs cross-entropy clustering on a data matrix.
