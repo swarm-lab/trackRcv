@@ -1,6 +1,5 @@
 # Globals and reactives
 volumes <- c(Home = fs::path_home(), getVolumes()())
-video_range <- c(0, 0)
 the_video <- NULL
 the_image <- NULL
 the_tracks <- NULL
@@ -13,8 +12,27 @@ default_path <- shiny::reactiveVal("")
 video_path <- shiny::reactiveVal()
 tracks_path <- shiny::reactiveVal()
 export_path <- shiny::reactiveVal()
-the_frame <- shiny::reactiveVal()
 refresh_video <- shiny::reactiveVal(0)
+
+visible <- shiny::reactive({
+  refresh_video()
+  is_video_capture(the_video)
+})
+
+video <- shiny::reactive({
+  refresh_video()
+  the_video
+})
+
+frame_position <- frame_position_range_server("fp", video, visible)
+
+shiny::observeEvent(visible(), {
+  if (isTRUE(visible())) {
+    shinyjs::show("controls_legend")
+  } else {
+    shinyjs::hide("controls_legend")
+  }
+})
 
 
 # UI
@@ -89,18 +107,20 @@ shiny::observeEvent(refresh_display(), {
       sc <- max(c(n_row(to_display), n_col(to_display)) / 720)
 
       if (data.table::is.data.table(the_tracks)) {
-        current_tracks <- the_tracks[frame == the_frame() & !ignore]$track_fixed
+        current_tracks <- the_tracks[
+          frame == frame_position$current_frame() & !ignore
+        ]$track_fixed
 
         if (length(current_tracks) > 0) {
           dt <- the_tracks[
-            frame <= the_frame() &
-              frame >= (the_frame() - input$track_length_x) # &
-              # track_fixed %in% current_tracks
+            frame <= frame_position$current_frame() &
+              frame >= (frame_position$current_frame() - input$track_length_x) # &
+            # track_fixed %in% current_tracks
           ]
 
           if (input$show_box) {
             void <- dt[
-              frame == the_frame(),
+              frame == frame_position$current_frame(),
               .drawBox(
                 to_display,
                 .SD$x,
@@ -142,7 +162,7 @@ shiny::observeEvent(refresh_display(), {
 
           if (input$show_id) {
             void <- dt[
-              frame == the_frame(),
+              frame == frame_position$current_frame(),
               .drawTag(
                 to_display,
                 .BY$track_fixed,
@@ -160,7 +180,7 @@ shiny::observeEvent(refresh_display(), {
 
           if (input$show_class) {
             void <- dt[
-              frame == the_frame(),
+              frame == frame_position$current_frame(),
               .drawTag(
                 to_display,
                 .SD$class,
@@ -276,18 +296,24 @@ shiny::observeEvent(video_path(), {
 })
 
 shiny::observeEvent(video_path(), {
-  to_check <- cv2$VideoCapture(video_path())
+  to_check <- open_display_video_handle(video_path())
 
-  if (reticulate::py_to_r(to_check$isOpened())) {
-    if (!is.na(n_frames(to_check))) {
-      if (n_frames(to_check) > 1) {
-        the_video <<- to_check
-        the_image <<- the_video$read()[1]
-        refresh_video(refresh_video() + 1)
-        refresh_display(refresh_display() + 1)
-      }
-    }
+  n <- if (reticulate::py_to_r(to_check$isOpened())) {
+    n_frames(to_check)
+  } else {
+    NA
   }
+
+  if (!is.na(n) && n > 1) {
+    the_video <<- to_check
+    the_image <<- the_video$read()[1]
+  } else {
+    the_video <<- NULL
+    the_image <<- NULL
+  }
+
+  refresh_video(refresh_video() + 1)
+  refresh_display(refresh_display() + 1)
 })
 
 
@@ -351,90 +377,10 @@ shiny::observeEvent(tracks_path(), {
 
 
 # Read frame
-shiny::observeEvent(input$video_controls_x, {
-  if (is_video_capture(the_video)) {
-    the_frame(input$video_controls_x[2])
-  }
-})
-
-shiny::observeEvent(the_frame(), {
-  if (!is.null(the_frame())) {
-    the_image <<- read_frame(the_video, the_frame())
+shiny::observeEvent(frame_position$current_frame(), {
+  if (is_video_capture(the_video) && frame_position$current_frame() >= 1) {
+    the_image <<- read_frame(the_video, frame_position$current_frame())
     refresh_display(refresh_display() + 1)
-  }
-})
-
-shiny::observeEvent(input$leftKey, {
-  if (is_video_capture(the_video)) {
-    vals <- input$video_controls_x
-
-    if (vals[2] > vals[1]) {
-      vals[2] <- vals[2] - 1
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = vals
-      )
-    }
-  }
-})
-
-shiny::observeEvent(input$rightKey, {
-  if (is_video_capture(the_video)) {
-    vals <- input$video_controls_x
-
-    if (vals[2] < vals[3]) {
-      vals[2] <- vals[2] + 1
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = vals
-      )
-    }
-  }
-})
-
-shiny::observeEvent(input$downKey, {
-  if (is_video_capture(the_video)) {
-    vals <- input$video_controls_x
-
-    if (vals[2] >= (vals[1] + fps(the_video))) {
-      vals[2] <- vals[2] - fps(the_video)
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = vals
-      )
-    } else {
-      vals[2] <- vals[1]
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = vals
-      )
-    }
-  }
-})
-
-shiny::observeEvent(input$upKey, {
-  if (is_video_capture(the_video)) {
-    vals <- input$video_controls_x
-
-    if (vals[2] <= (vals[3] - fps(the_video))) {
-      vals[2] <- vals[2] + fps(the_video)
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = vals
-      )
-    } else {
-      vals[2] <- vals[3]
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = vals
-      )
-    }
   }
 })
 
@@ -463,8 +409,9 @@ shiny::observeEvent(export_path(), {
       duration = NULL
     )
 
-    n <- input$video_controls_x[3] - input$video_controls_x[1] + 1
-    the_video$set(cv2$CAP_PROP_POS_FRAMES, input$video_controls_x[1] - 1)
+    export_range <- frame_position$frame_range()
+    n <- export_range[2] - export_range[1] + 1
+    the_video$set(cv2$CAP_PROP_POS_FRAMES, export_range[1] - 1)
     sc <- max(c(n_row(to_display), n_col(to_display)) / 720)
 
     vw <- cv2$VideoWriter(
@@ -502,13 +449,15 @@ shiny::observeEvent(export_path(), {
       ))
 
       if (data.table::is.data.table(the_tracks)) {
-        current_tracks <- the_tracks[frame == current_frame & !ignore]$track_fixed
+        current_tracks <- the_tracks[
+          frame == current_frame & !ignore
+        ]$track_fixed
 
         if (length(current_tracks) > 0) {
           dt <- the_tracks[
             frame <= current_frame &
               frame >= (current_frame - input$track_length_x) # &
-              # track_fixed %in% current_tracks
+            # track_fixed %in% current_tracks
           ]
 
           if (input$show_box) {
