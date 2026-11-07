@@ -15,7 +15,8 @@ Roxygen: list(markdown = TRUE)
 URL: https://swarm-lab.github.io/trackRcv/
 Suggests: 
     knitr,
-    quarto
+    quarto,
+    testthat (>= 3.0.0)
 Imports: 
     autothresholdr,
     CEC (>= 0.12.0),
@@ -39,3 +40,4 @@ Imports:
     utils
 VignetteBuilder: quarto
 Config/roxygen2/version: 8.1.0
+Config/testthat/edition: 3

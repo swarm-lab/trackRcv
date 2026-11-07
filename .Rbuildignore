@@ -10,11 +10,10 @@
 ^graveyard$
 ^logo\.png$
 ^logo\.svg$
-openspec
 ^\.claude$
 ^\.agents$
 ^\.omp$
 ^\.git$
 ^\.gitignore$
 ^handoffs$
-^inst/termites$
+^AGENTS\.md$

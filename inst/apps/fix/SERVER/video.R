@@ -14,10 +14,29 @@ default_path <- shiny::reactiveVal("")
 video_path <- shiny::reactiveVal()
 tracks_path <- shiny::reactiveVal()
 export_path <- shiny::reactiveVal()
-the_frame <- shiny::reactiveVal()
 refresh_video <- shiny::reactiveVal(0)
 refresh_stats <- shiny::reactiveVal(0)
 errors <- shiny::reactiveVal()
+
+visible <- shiny::reactive({
+  refresh_video()
+  is_video_capture(the_video)
+})
+
+video <- shiny::reactive({
+  refresh_video()
+  the_video
+})
+
+frame_position <- frame_position_scalar_server("fp", video, visible)
+
+shiny::observeEvent(visible(), {
+  if (isTRUE(visible())) {
+    shinyjs::show("controls_legend")
+  } else {
+    shinyjs::hide("controls_legend")
+  }
+})
 
 
 # UI ---------------------------------------------------------------------
@@ -70,12 +89,14 @@ shiny::observeEvent(refresh_display(), {
       sc <- max(c(n_row(to_display), n_col(to_display)) / 720)
 
       if (data.table::is.data.table(the_tracks)) {
-        current_tracks <- the_tracks[frame == the_frame()]$track_fixed
+        current_tracks <- the_tracks[
+          frame == frame_position$current_frame()
+        ]$track_fixed
 
         if (length(current_tracks) > 0) {
           if (input$show_boxes & input$line_width_x > 0) {
             void <- the_tracks[
-              frame == the_frame() & ignore != TRUE,
+              frame == frame_position$current_frame() & ignore != TRUE,
               .drawBox(
                 to_display,
                 .SD$x,
@@ -98,7 +119,7 @@ shiny::observeEvent(refresh_display(), {
 
           if (input$show_id & input$line_width_x > 0) {
             void <- the_tracks[
-              frame == the_frame() & ignore != TRUE,
+              frame == frame_position$current_frame() & ignore != TRUE,
               .drawTag(
                 to_display,
                 .BY$track_fixed,
@@ -214,18 +235,24 @@ shiny::observeEvent(video_path(), {
 })
 
 shiny::observeEvent(video_path(), {
-  to_check <- cv2$VideoCapture(video_path())
+  to_check <- open_display_video_handle(video_path())
 
-  if (reticulate::py_to_r(to_check$isOpened())) {
-    if (!is.na(n_frames(to_check))) {
-      if (n_frames(to_check) > 1) {
-        the_video <<- to_check
-        the_image <<- the_video$read()[1]
-        refresh_video(refresh_video() + 1)
-        refresh_display(refresh_display() + 1)
-      }
-    }
+  n <- if (reticulate::py_to_r(to_check$isOpened())) {
+    n_frames(to_check)
+  } else {
+    NA
   }
+
+  if (!is.na(n) && n > 1) {
+    the_video <<- to_check
+    the_image <<- the_video$read()[1]
+  } else {
+    the_video <<- NULL
+    the_image <<- NULL
+  }
+
+  refresh_video(refresh_video() + 1)
+  refresh_display(refresh_display() + 1)
 })
 
 
@@ -290,67 +317,10 @@ shiny::observeEvent(tracks_path(), {
 
 
 # Video navigation -------------------------------------------------------
-shiny::observeEvent(input$video_controls_x, {
-  if (is_video_capture(the_video)) {
-    the_frame(input$video_controls_x)
-  }
-})
-
-shiny::observeEvent(the_frame(), {
-  if (!is.null(the_frame())) {
-    the_image <<- read_frame(the_video, the_frame())
+shiny::observeEvent(frame_position$current_frame(), {
+  if (is_video_capture(the_video) && frame_position$current_frame() >= 1) {
+    the_image <<- read_frame(the_video, frame_position$current_frame())
     refresh_display(refresh_display() + 1)
-  }
-})
-
-shiny::observeEvent(input$leftKey, {
-  if (trackRcv::is_video_capture(the_video)) {
-    if (input$video_controls_x > 1) {
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = input$video_controls_x - 1
-      )
-    }
-  }
-})
-
-shiny::observeEvent(input$rightKey, {
-  if (trackRcv::is_video_capture(the_video)) {
-    if (input$video_controls_x < trackRcv::n_frames(the_video)) {
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = input$video_controls_x + 1
-      )
-    }
-  }
-})
-
-shiny::observeEvent(input$downKey, {
-  if (trackRcv::is_video_capture(the_video)) {
-    if (input$video_controls_x >= (1 + trackRcv::fps(the_video))) {
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = input$video_controls_x - trackRcv::fps(the_video)
-      )
-    }
-  }
-})
-
-shiny::observeEvent(input$upKey, {
-  if (trackRcv::is_video_capture(the_video)) {
-    if (
-      input$video_controls_x <=
-        (trackRcv::n_frames(the_video) - trackRcv::fps(the_video))
-    ) {
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = input$video_controls_x + trackRcv::fps(the_video)
-      )
-    }
   }
 })
 
@@ -439,11 +409,7 @@ shiny::observeEvent(
   input$suspect,
   {
     if (is_video_capture(the_video)) {
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = as.numeric(sub("_.*", "", input$suspect))
-      )
+      frame_position$set_frame(as.numeric(sub("_.*", "", input$suspect)))
     }
   },
   ignoreInit = TRUE
@@ -460,7 +426,7 @@ shiny::observeEvent(input$reassign_track, {
     ids <- c(
       "",
       the_tracks[
-        ignore == FALSE & frame == input$video_controls_x
+        ignore == FALSE & frame == frame_position$current_frame()
       ]$track_fixed
     )
 
@@ -510,7 +476,7 @@ shiny::observeEvent(input$ok_reassign, {
       idx <- the_tracks[, track_fixed] == old_id
       the_tracks[idx, track_fixed := new_id]
       changes[[length(changes) + 1]] <<- list(
-        frame = input$video_controls_x,
+        frame = frame_position$current_frame(),
         type = "reassign",
         idx = which(idx),
         revert = as.numeric(old_id)
@@ -543,7 +509,7 @@ shiny::observeEvent(input$remove_track, {
     ids <- c(
       "",
       the_tracks[
-        ignore == FALSE & frame == input$video_controls_x
+        ignore == FALSE & frame == frame_position$current_frame()
       ]$track_fixed
     )
 
@@ -576,10 +542,10 @@ shiny::observeEvent(input$ok_remove, {
 
   if (!is.na(rm_id)) {
     idx <- the_tracks[, track_fixed] == rm_id &
-      the_tracks[, frame] >= input$video_controls_x
+      the_tracks[, frame] >= frame_position$current_frame()
     the_tracks[idx, ignore := TRUE]
     changes[[length(changes) + 1]] <<- list(
-      frame = input$video_controls_x,
+      frame = frame_position$current_frame(),
       type = "remove",
       idx = which(idx),
       revert = FALSE
@@ -599,7 +565,7 @@ shiny::observeEvent(input$swap_track, {
     ids <- c(
       "",
       the_tracks[
-        ignore == FALSE & frame == input$video_controls_x
+        ignore == FALSE & frame == frame_position$current_frame()
       ]$track_fixed
     )
 
@@ -655,13 +621,13 @@ shiny::observeEvent(input$ok_swap, {
 
   if (!is.na(id1) & !is.na(id2)) {
     idx1 <- the_tracks[, track_fixed] == id1 &
-      the_tracks[, frame] >= input$video_controls_x
+      the_tracks[, frame] >= frame_position$current_frame()
     idx2 <- the_tracks[, track_fixed] == id2 &
-      the_tracks[, frame] >= input$video_controls_x
+      the_tracks[, frame] >= frame_position$current_frame()
     the_tracks[idx1, track_fixed := id2]
     the_tracks[idx2, track_fixed := id1]
     changes[[length(changes) + 1]] <<- list(
-      frame = input$video_controls_x,
+      frame = frame_position$current_frame(),
       type = "swap",
       idx1 = which(idx1),
       idx2 = which(idx2),
@@ -683,7 +649,7 @@ shiny::observeEvent(input$merge_track, {
     ids <- c(
       "",
       the_tracks[
-        ignore == FALSE & frame == input$video_controls_x
+        ignore == FALSE & frame == frame_position$current_frame()
       ]$track_fixed
     )
 
@@ -830,7 +796,7 @@ shiny::observeEvent(input$ok_merge, {
     the_tracks[idx, names(fixed) := fixed]
 
     changes[[length(changes) + 1]] <<- list(
-      frame = input$video_controls_x,
+      frame = frame_position$current_frame(),
       type = "merge",
       idx = which(idx),
       revert = orig
@@ -866,11 +832,7 @@ shiny::observeEvent(input$revert_changes, {
         ]
       }
 
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = changes[[l]]$frame
-      )
+      frame_position$set_frame(changes[[l]]$frame)
 
       changes[[l]] <<- NULL
       refresh_stats(refresh_stats() + 1)

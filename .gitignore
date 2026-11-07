@@ -12,9 +12,8 @@ inst/doc
 graveyard/
 /.quarto/
 **/*.quarto_ipynb
-openspec/
 .agents
 .omp
 .claude
 handoffs
-inst/termites
+AGENTS.md
