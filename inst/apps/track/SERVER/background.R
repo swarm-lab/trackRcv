@@ -156,8 +156,8 @@ shiny::observeEvent(input$compute_background, {
         the_video,
         n = input$background_images_x,
         method = input$background_type_x,
-        start = input$video_controls_x[1],
-        end = input$video_controls_x[3]
+        start = frame_position$frame_range()[1],
+        end = frame_position$frame_range()[2]
       )
     )
 

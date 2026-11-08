@@ -1,8 +1,14 @@
 # trackRcv (development version)
 
+* The "Auto parameters" step of the `track` app no longer stops with "missing
+  value where TRUE/FALSE needed". It now skips detected objects that have a
+  non-finite value or a zero width or height. If no usable object is left, it
+  shows a warning and leaves the parameters unchanged.
 * The `fix` app now clears the displayed frame and hides the frame control
   when a video fails to load. Before, a failed load left the previous frame
   on screen.
+* The `track` and `visualize` apps now clear the displayed frame and hide the
+  frame control when a video fails to load, as the `fix` app does.
 * New `frame_position_range_ui()` and `frame_position_range_server()` add a
   reusable frame-position control with an adjustable analysis window, for
   apps such as `track` and `visualize`. `frame_position_range_ui()` accepts

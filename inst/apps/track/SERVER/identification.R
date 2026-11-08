@@ -119,7 +119,8 @@ shiny::observeEvent(refresh_display(), {
     )
     w <- reticulate::py_to_r(
       gray[reticulate::tuple(np$int32(nz[, 2]), np$int32(nz[, 1]))]
-    ) - input$threshold_x
+    ) -
+      input$threshold_x
 
     dt <- data.table::data.table(
       group = group,
@@ -254,8 +255,8 @@ shiny::observeEvent(input$auto_params, {
     mask <- cv2$divide(mask, 255)
 
     frame_pos <- round(seq.int(
-      input$video_controls_x[1],
-      input$video_controls_x[3],
+      frame_position$frame_range()[1],
+      frame_position$frame_range()[2],
       length.out = input$n_ID_frames_x
     ))
 
@@ -288,7 +289,8 @@ shiny::observeEvent(input$auto_params, {
       labs <- reticulate::py_to_r(cc[1][cc[1]$nonzero()])
       w <- reticulate::py_to_r(
         gray[reticulate::tuple(np$int32(nz[, 2]), np$int32(nz[, 1]))]
-      ) - input$threshold_x
+      ) -
+        input$threshold_x
 
       dt <- data.table::data.table(
         label = labs,
@@ -328,35 +330,41 @@ shiny::observeEvent(input$auto_params, {
       }
     }
 
-    tot_summ[,
-      outlier := mvoutlier::pcout(
-        cbind(scale(width), scale(height), scale(density))
-      )$wfinal01 ==
-        0
-    ]
+    has_objects <- !is.null(tot_summ) && nrow(tot_summ) > 0
+
+    if (has_objects) {
+      tot_summ[, outlier := .trk_flag_outliers(tot_summ)]
+    }
 
     pb$close()
 
-    shiny::updateNumericInput(
-      session,
-      "blob_width_x",
-      value = round(1.05 * max(tot_summ[outlier == FALSE, width]))
-    )
-    shiny::updateNumericInput(
-      session,
-      "blob_height_x",
-      value = round(1.05 * max(tot_summ[outlier == FALSE, height]))
-    )
-    shiny::updateNumericInput(
-      session,
-      "blob_area_x",
-      value = round(0.95 * min(tot_summ[outlier == FALSE, n]))
-    )
-    shiny::updateNumericInput(
-      session,
-      "blob_density_x",
-      value = round(0.95 * min(tot_summ[outlier == FALSE, density]), 3)
-    )
+    if (has_objects && any(!tot_summ$outlier)) {
+      shiny::updateNumericInput(
+        session,
+        "blob_width_x",
+        value = round(1.05 * max(tot_summ[outlier == FALSE, width]))
+      )
+      shiny::updateNumericInput(
+        session,
+        "blob_height_x",
+        value = round(1.05 * max(tot_summ[outlier == FALSE, height]))
+      )
+      shiny::updateNumericInput(
+        session,
+        "blob_area_x",
+        value = round(0.95 * min(tot_summ[outlier == FALSE, n]))
+      )
+      shiny::updateNumericInput(
+        session,
+        "blob_density_x",
+        value = round(0.95 * min(tot_summ[outlier == FALSE, density]), 3)
+      )
+    } else {
+      shiny::showNotification(
+        "No usable objects were detected. Adjust the segmentation settings.",
+        type = "warning"
+      )
+    }
 
     shiny::removeNotification(id = "detecting")
     shinyjs::hideElement("curtain")

@@ -1,14 +1,33 @@
 # Globals and reactives
 volumes <- c(Home = fs::path_home(), shinyFiles::getVolumes()())
-video_range <- c(0, 0)
 the_video <- NULL
+the_bulk_video <- NULL
 the_image <- NULL
 
 default_root <- shiny::reactiveVal()
 default_path <- shiny::reactiveVal("")
 video_path <- shiny::reactiveVal()
-the_frame <- shiny::reactiveVal()
 refresh_video <- shiny::reactiveVal(0)
+
+visible <- shiny::reactive({
+  refresh_video()
+  isTRUE(input$main %in% c("1", "4", "5", "6")) && is_video_capture(the_video)
+})
+
+video <- shiny::reactive({
+  refresh_video()
+  the_video
+})
+
+frame_position <- frame_position_range_server("fp", video, visible)
+
+shiny::observeEvent(visible(), {
+  if (isTRUE(visible())) {
+    shinyjs::show("controls_legend")
+  } else {
+    shinyjs::hide("controls_legend")
+  }
+})
 
 
 # UI
@@ -143,105 +162,33 @@ shiny::observeEvent(video_path(), {
 })
 
 shiny::observeEvent(video_path(), {
-  to_check <- cv2$VideoCapture(video_path())
+  to_check <- open_display_video_handle(video_path())
 
-  if (reticulate::py_to_r(to_check$isOpened())) {
-    if (!is.na(n_frames(to_check))) {
-      if (n_frames(to_check) > 1) {
-        the_video <<- to_check
-        the_image <<- the_video$read()[1]
-        refresh_video(refresh_video() + 1)
-        refresh_display(refresh_display() + 1)
-      }
-    }
+  n <- if (reticulate::py_to_r(to_check$isOpened())) {
+    n_frames(to_check)
+  } else {
+    NA
   }
+
+  if (!is.na(n) && n > 1) {
+    the_video <<- to_check
+    the_bulk_video <<- open_bulk_video_handle(video_path())
+    the_image <<- the_video$read()[1]
+  } else {
+    the_video <<- NULL
+    the_bulk_video <<- NULL
+    the_image <<- NULL
+  }
+
+  refresh_video(refresh_video() + 1)
+  refresh_display(refresh_display() + 1)
 })
 
 
 # Read frame
-shiny::observeEvent(input$leftKey, {
-  if (is_video_capture(the_video)) {
-    vals <- input$video_controls_x
-
-    if (vals[2] > vals[1]) {
-      vals[2] <- vals[2] - 1
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = vals
-      )
-    }
-  }
-})
-
-shiny::observeEvent(input$rightKey, {
-  if (is_video_capture(the_video)) {
-    vals <- input$video_controls_x
-
-    if (vals[2] < vals[3]) {
-      vals[2] <- vals[2] + 1
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = vals
-      )
-    }
-  }
-})
-
-shiny::observeEvent(input$downKey, {
-  if (is_video_capture(the_video)) {
-    vals <- input$video_controls_x
-
-    if (vals[2] >= (vals[1] + fps(the_video))) {
-      vals[2] <- vals[2] - fps(the_video)
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = vals
-      )
-    } else {
-      vals[2] <- vals[1]
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = vals
-      )
-    }
-  }
-})
-
-shiny::observeEvent(input$upKey, {
-  if (is_video_capture(the_video)) {
-    vals <- input$video_controls_x
-
-    if (vals[2] <= (vals[3] - fps(the_video))) {
-      vals[2] <- vals[2] + fps(the_video)
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = vals
-      )
-    } else {
-      vals[2] <- vals[3]
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "video_controls_x",
-        value = vals
-      )
-    }
-  }
-})
-
-shiny::observeEvent(input$video_controls_x, {
-  if (is_video_capture(the_video)) {
-    the_frame(input$video_controls_x[2])
-  }
-})
-
-shiny::observeEvent(the_frame(), {
-  if (!is.null(the_frame())) {
-    the_image <<- read_frame(the_video, the_frame())
+shiny::observeEvent(frame_position$current_frame(), {
+  if (is_video_capture(the_video) && frame_position$current_frame() >= 1) {
+    the_image <<- read_frame(the_video, frame_position$current_frame())
     refresh_display(refresh_display() + 1)
   }
 })

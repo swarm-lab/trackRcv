@@ -75,7 +75,7 @@ shiny::observeEvent(tracks_path(), {
       angle = double()
     )
     mt <<- 0
-    n <<- input$video_controls_x[3] - input$video_controls_x[1] + 1
+    n <<- frame_position$frame_range()[2] - frame_position$frame_range()[1] + 1
     sc <<- max(c(n_row(to_display), n_col(to_display)) / 720)
 
     background <<- the_background$copy()
@@ -110,7 +110,10 @@ shiny::observeEvent(tracks_path(), {
       c(2L * dilate_radius + 1L, 2L * dilate_radius + 1L)
     )
 
-    the_video$set(cv2$CAP_PROP_POS_FRAMES, input$video_controls_x[1] - 1)
+    the_bulk_video$set(
+      cv2$CAP_PROP_POS_FRAMES,
+      frame_position$frame_range()[1] - 1
+    )
 
     loop(1)
   }
@@ -119,7 +122,7 @@ shiny::observeEvent(tracks_path(), {
 shiny::observeEvent(loop_debounced(), {
   if (loop() > 0) {
     if (loop() <= n) {
-      frame <<- the_video$read()[1]
+      frame <<- the_bulk_video$read()[1]
 
       if (input$preview_tracks_x) {
         to_display <<- frame$copy()
@@ -157,7 +160,8 @@ shiny::observeEvent(loop_debounced(), {
       )
       w <- reticulate::py_to_r(
         gray[reticulate::tuple(np$int32(nz[, 2]), np$int32(nz[, 1]))]
-      ) - input$threshold_x
+      ) -
+        input$threshold_x
 
       dt <- data.table::data.table(
         group = group,
@@ -221,7 +225,7 @@ shiny::observeEvent(loop_debounced(), {
       centers <<- shape[, 1:2, drop = FALSE]
 
       if (!is.null(shape)) {
-        frame_number <- reticulate::py_to_r(the_video$get(
+        frame_number <- reticulate::py_to_r(the_bulk_video$get(
           cv2$CAP_PROP_POS_FRAMES
         ))
 

@@ -105,8 +105,8 @@ shiny::observeEvent(input$optimize_thresholds, {
     )
 
     frame_pos <- round(seq.int(
-      input$video_controls_x[1],
-      input$video_controls_x[3],
+      frame_position$frame_range()[1],
+      frame_position$frame_range()[2],
       length.out = 20
     ))
 

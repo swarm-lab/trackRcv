@@ -67,7 +67,6 @@ shiny::onBookmark(function(state) {
   if (!is.null(unit_real())) {
     state$values$unit_real <- unit_real()
   }
-  state$values$video_range <- video_range
   state$values$origin <- origin()
 })
 
@@ -136,9 +135,6 @@ shiny::onRestore(function(state) {
   }
   if (!is.null(state$values$unit_real)) {
     unit_real(state$values$unit_real)
-  }
-  if (!is.null(state$values$video_range)) {
-    video_range <<- state$values$video_range
   }
   if (!is.null(state$values$origin)) origin(state$values$origin)
 })
