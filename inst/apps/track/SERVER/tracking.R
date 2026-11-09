@@ -185,6 +185,10 @@ shiny::observeEvent(loop_debounced(), {
         seed_group[in_range] <- dt_mat[nearest_ix[in_range], 1]
       }
 
+      frame_number <- reticulate::py_to_r(the_bulk_video$get(
+        cv2$CAP_PROP_POS_FRAMES
+      ))
+
       max_area <- pi * (input$blob_width_x / 2) * (input$blob_height_x / 2)
 
       shape <- c()
@@ -204,7 +208,8 @@ shiny::observeEvent(loop_debounced(), {
             split.width = input$blob_width_x,
             split.height = input$blob_height_x,
             split.density = input$blob_density_x,
-            min.size = input$blob_area_x
+            min.size = input$blob_area_x,
+            seed = frame_number
           )
         } else {
           cl <- kbox(
@@ -215,7 +220,8 @@ shiny::observeEvent(loop_debounced(), {
             split.width = input$blob_width_x,
             split.height = input$blob_height_x,
             split.density = input$blob_density_x,
-            min.size = input$blob_area_x
+            min.size = input$blob_area_x,
+            seed = frame_number
           )
         }
 
@@ -225,10 +231,6 @@ shiny::observeEvent(loop_debounced(), {
       centers <<- shape[, 1:2, drop = FALSE]
 
       if (!is.null(shape)) {
-        frame_number <- reticulate::py_to_r(the_bulk_video$get(
-          cv2$CAP_PROP_POS_FRAMES
-        ))
-
         blobs <- data.table::data.table(
           x = shape[, 1],
           y = shape[, 2],

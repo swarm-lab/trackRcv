@@ -13,7 +13,8 @@ kbox(
   split.height = Inf,
   split.density = 0,
   min.size = 0,
-  split.sensitivity = 0
+  split.sensitivity = 0,
+  seed = NULL
 )
 }
 \arguments{
@@ -54,6 +55,13 @@ totals.}
 \item{split.sensitivity}{The minimum amount of improvement in the cost
 function of the cross-entropy clustering for a splitting event to be
 considered valid.}
+
+\item{seed}{\code{NULL} or one finite number. If it is a number,
+\code{kbox()} calls \code{\link[base]{set.seed}} with it before it
+clusters, and restores the previous state of the random number generator
+when it returns. The same \code{seed} and the same data then give the same
+result. If it is \code{NULL}, \code{kbox()} uses the current state of the
+random number generator, and repeated calls can give different results.}
 }
 \value{
 A matrix with 6 columns: x and y coordinates of the centers of the

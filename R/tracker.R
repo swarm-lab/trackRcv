@@ -102,6 +102,13 @@ simplerTracker <- function(current, past, maxDist = 10) {
 #'  function of the cross-entropy clustering for a splitting event to be
 #'  considered valid.
 #'
+#' @param seed \code{NULL} or one finite number. If it is a number,
+#'  \code{kbox()} calls \code{\link[base]{set.seed}} with it before it
+#'  clusters, and restores the previous state of the random number generator
+#'  when it returns. The same \code{seed} and the same data then give the same
+#'  result. If it is \code{NULL}, \code{kbox()} uses the current state of the
+#'  random number generator, and repeated calls can give different results.
+#'
 #' @return A matrix with 6 columns: x and y coordinates of the centers of the
 #'  clusters, width, height, and angle of the covariance ellipse best describing
 #'  each cluster, and the number of element in each cluster. \code{NULL} if
@@ -119,8 +126,32 @@ kbox <- function(
   split.height = Inf,
   split.density = 0,
   min.size = 0,
-  split.sensitivity = 0
+  split.sensitivity = 0,
+  seed = NULL
 ) {
+  if (!is.null(seed)) {
+    if (!is.numeric(seed) || length(seed) != 1 || !is.finite(seed)) {
+      stop("`seed` must be NULL or a single finite number.", call. = FALSE)
+    }
+
+    genv <- globalenv()
+    had_seed <- exists(".Random.seed", envir = genv, inherits = FALSE)
+    if (had_seed) {
+      old_seed <- get(".Random.seed", envir = genv, inherits = FALSE)
+    }
+
+    on.exit(
+      if (had_seed) {
+        assign(".Random.seed", old_seed, envir = genv)
+      } else if (exists(".Random.seed", envir = genv, inherits = FALSE)) {
+        rm(".Random.seed", envir = genv)
+      },
+      add = TRUE
+    )
+
+    set.seed(seed)
+  }
+
   if (!is.matrix(x)) {
     x <- as.matrix(x)
   }

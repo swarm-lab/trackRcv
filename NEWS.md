@@ -19,6 +19,12 @@
   analysis window, for apps such as `fix`. `frame_position_scalar_ui()`
   accepts optional `color` and `pips` parameters to reproduce a host app's
   own slider appearance.
+* `kbox()` has a new `seed` argument. With a seed, the same data give the same
+  result, and the global random number state is restored when `kbox()`
+  returns. The `track` app passes the frame number as the seed, so two
+  tracking runs on the same video and the same window can give the same
+  result. Before, the random starting centers of `kbox()` could change the
+  number of objects in some frames between runs.
 * New `open_bulk_video_handle()` and `open_display_video_handle()` open
   separate Python VideoCapture handles for bulk sequential reads and
   on-demand display reads, so the two access patterns cannot interfere
