@@ -9,6 +9,14 @@
   on screen.
 * The `track` and `visualize` apps now clear the displayed frame and hide the
   frame control when a video fails to load, as the `fix` app does.
+* Bookmark files that an earlier version of the `track` app saved no longer
+  restore the analysis window. The app now saves the window with the frame
+  control and ignores the old `video_range` value. An old file restores with
+  the window set to the full video, from the first frame to the last frame.
+* The `track` app now removes a loaded background or mask when you load a video
+  of a different size, and shows one message. Before, a later step stopped with
+  an OpenCV size error. A bookmark saved afterward no longer holds the removed
+  background or mask.
 * New `frame_position_range_ui()` and `frame_position_range_server()` add a
   reusable frame-position control with an adjustable analysis window, for
   apps such as `track` and `visualize`. `frame_position_range_ui()` accepts

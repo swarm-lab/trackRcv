@@ -174,6 +174,43 @@ shiny::observeEvent(video_path(), {
     the_video <<- to_check
     the_bulk_video <<- open_bulk_video_handle(video_path())
     the_image <<- the_video$read()[1]
+
+    cleared <- c()
+
+    if (
+      is_image(the_background) &&
+        (n_row(the_background) != n_row(the_image) ||
+          n_col(the_background) != n_col(the_image))
+    ) {
+      the_background <<- NULL
+      background_path(NULL)
+      cleared <- c(cleared, "background")
+    }
+
+    if (
+      is_image(the_mask) &&
+        (n_row(the_mask) != n_row(the_image) ||
+          n_col(the_mask) != n_col(the_image))
+    ) {
+      the_mask <<- NULL
+      mask_path(NULL)
+      cleared <- c(cleared, "mask")
+    }
+
+    if (length(cleared) > 0) {
+      shinyalert::shinyalert(
+        "Warning:",
+        paste0(
+          "The new video has a different size. The ",
+          paste(cleared, collapse = " and "),
+          if (length(cleared) > 1) " were" else " was",
+          " removed."
+        ),
+        type = "warning",
+        animation = FALSE,
+        closeOnClickOutside = TRUE
+      )
+    }
   } else {
     the_video <<- NULL
     the_bulk_video <<- NULL
