@@ -6,6 +6,7 @@ refresh_background <- shiny::reactiveVal(0)
 collect_ghost <- shiny::reactiveVal(0)
 stop_ghost_collection <- shiny::reactiveVal(0)
 background_path <- shiny::reactiveVal()
+previous_background_path <- NULL
 
 
 # UI
@@ -92,6 +93,7 @@ shinyFiles::shinyFileChoose(
 shiny::observeEvent(input$background_file, {
   path <- shinyFiles::parseFilePaths(volumes, input$background_file)
   if (nrow(path) > 0) {
+    previous_background_path <<- background_path()
     background_path(normalizePath(path$datapath, mustWork = FALSE))
     refresh_background(refresh_background() + 1)
   }
@@ -100,6 +102,8 @@ shiny::observeEvent(input$background_file, {
 shiny::observeEvent(refresh_background(), {
   if (refresh_background() > 0) {
     to_check <- cv2$imread(background_path())
+
+    rejected <- !is_image(to_check)
 
     if (is_image(to_check)) {
       if (
@@ -116,6 +120,7 @@ shiny::observeEvent(refresh_background(), {
           closeOnClickOutside = TRUE
         )
         the_background <<- NULL
+        rejected <- TRUE
       } else {
         the_background <<- to_check$copy()
       }
@@ -142,6 +147,14 @@ shiny::observeEvent(refresh_background(), {
       default_path(gsub(paste0(".*", volume), "", dir))
 
       refresh_display(refresh_display() + 1)
+    }
+
+    if (rejected) {
+      # A size mismatch clears the image, so clear its path. An unreadable
+      # file leaves the image alone, so keep the path that belongs to it.
+      background_path(
+        if (is_image(to_check)) NULL else previous_background_path
+      )
     }
   }
 })

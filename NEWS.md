@@ -17,6 +17,10 @@
   of a different size, and shows one message. Before, a later step stopped with
   an OpenCV size error. A bookmark saved afterward no longer holds the removed
   background or mask.
+* The `track` app no longer keeps the path of a rejected background or mask
+  file. Before, a file of the wrong size left its path in the app, and a
+  bookmark saved afterward restored it. The app now clears the path after a
+  size mismatch. It keeps the earlier path when the file is not an image.
 * New `frame_position_range_ui()` and `frame_position_range_server()` add a
   reusable frame-position control with an adjustable analysis window, for
   apps such as `track` and `visualize`. `frame_position_range_ui()` accepts

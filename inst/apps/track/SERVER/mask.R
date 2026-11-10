@@ -3,6 +3,7 @@ the_mask <- NULL
 mask_coords <- NULL
 
 mask_path <- shiny::reactiveVal()
+previous_mask_path <- NULL
 refresh_mask <- shiny::reactiveVal(0)
 collect_mask <- shiny::reactiveVal(0)
 stop_mask_collection <- shiny::reactiveVal(0)
@@ -154,6 +155,7 @@ shinyFiles::shinyFileChoose(
 shiny::observeEvent(input$mask_file, {
   path <- shinyFiles::parseFilePaths(volumes, input$mask_file)
   if (nrow(path) > 0) {
+    previous_mask_path <<- mask_path()
     mask_path(normalizePath(path$datapath, mustWork = FALSE))
     refresh_mask(refresh_mask() + 1)
   }
@@ -162,6 +164,8 @@ shiny::observeEvent(input$mask_file, {
 shiny::observeEvent(refresh_mask(), {
   if (refresh_mask() > 0) {
     to_check <- cv2$imread(mask_path())
+
+    rejected <- !is_image(to_check)
 
     if (is_image(to_check)) {
       if (
@@ -178,6 +182,7 @@ shiny::observeEvent(refresh_mask(), {
           closeOnClickOutside = TRUE
         )
         the_mask <<- NULL
+        rejected <- TRUE
       } else {
         the_mask <<- to_check$copy()
       }
@@ -203,6 +208,12 @@ shiny::observeEvent(refresh_mask(), {
       default_path(gsub(paste0(".*", volume), "", dir))
 
       refresh_display(refresh_display() + 1)
+    }
+
+    if (rejected) {
+      # A size mismatch clears the image, so clear its path. An unreadable
+      # file leaves the image alone, so keep the path that belongs to it.
+      mask_path(if (is_image(to_check)) NULL else previous_mask_path)
     }
   }
 })
