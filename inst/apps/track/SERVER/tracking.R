@@ -58,7 +58,7 @@ shiny::observeEvent(tracks_path(), {
   ) {
     shinyjs::showElement("curtain")
     shiny::showNotification(
-      "Tracking in progress.",
+      "Tracking in progress. Press Esc to cancel.",
       id = "tracking",
       duration = NULL
     )
@@ -349,5 +349,19 @@ shiny::observeEvent(loop_debounced(), {
       shiny::removeNotification(id = "tracking")
       shinyjs::hideElement("curtain")
     }
+  }
+})
+
+shiny::observeEvent(input$escKey, {
+  if (loop() > 0) {
+    done <- loop() - 1
+    loop(0)
+    pb$close()
+    shiny::removeNotification(id = "tracking")
+    shinyjs::hideElement("curtain")
+    shiny::showNotification(
+      paste0("Tracking canceled after ", done, " of ", n, " frames."),
+      type = "warning"
+    )
   }
 })

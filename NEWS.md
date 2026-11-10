@@ -21,6 +21,12 @@
   file. Before, a file of the wrong size left its path in the app, and a
   bookmark saved afterward restored it. The app now clears the path after a
   size mismatch. It keeps the earlier path when the file is not an image.
+* Tracking in the `track` app now stops when you press Esc. The app keeps the
+  tracks that it wrote up to that frame, and shows how many frames it
+  processed. While a long step runs in the `track` app (background
+  computation, object detection, threshold optimization, tracking) or in the
+  `visualize` app (video export), the apps now ignore all keys except Esc.
+  Before, arrow keys moved the frame control during tracking.
 * New `frame_position_range_ui()` and `frame_position_range_server()` add a
   reusable frame-position control with an adjustable analysis window, for
   apps such as `track` and `visualize`. `frame_position_range_ui()` accepts

@@ -1,4 +1,13 @@
 window.addEventListener("keydown", function (event) {
+    var curtain = document.getElementById("curtain");
+    if (
+        event.code !== "Escape" &&
+        curtain &&
+        window.getComputedStyle(curtain).display !== "none"
+    ) {
+        return;
+    }
+
     if (event.code === "Escape") {
         Shiny.onInputChange("escKey", Math.random());
     }
